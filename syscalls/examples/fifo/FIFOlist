@@ -1,0 +1,23 @@
+FIFOserv.c
+FIFOcli.c
+
+Diff between an ordinary file and a FIFO:
+
+1) FIFOs are nothing more than pipes, except they have a name in the 
+   file system.
+
+2) FIFO open will block until another process has opened the same FIFO
+   for the complimentary operation. 
+   open for reading will block until another process opens for write and
+   vice versa. 
+
+3) A read on FIFO will return 0 if no process has the FIFO open 
+   for complementary operation. 
+
+4) A write on FIFO with no process open for read, will generate
+   SIGPIPE. Default action is termination. 
+   If this signal is caught or ignored write will return errno of EPIPE.
+
+5) Data once read from a pipe or FIFO by any process can not be re read. 
+   Where as with files no such restrictions. 
+

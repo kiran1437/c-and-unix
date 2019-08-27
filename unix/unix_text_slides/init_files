@@ -1,0 +1,12 @@
+
+   Login SHell:
+
+          /etc/profile
+          ~/.bash_profile
+
+
+   Non Login SHells:
+           ~/.bashrc 
+
+
+

@@ -1,0 +1,60 @@
+Numeric test
+
+
+-eq     Equal to
+-ne     Not Equal to
+-lt      Lesser Than
+-le      Lesser Than or Equal to
+-gt     Greater Than
+-ge    Greater Than or Equal to
+
+
+X=30
+[ $X -gt 100 ]
+
+
+String test:
+
+\>  Greater than
+\>  Less than
+=   Equality
+!=  Inequality
+-z  Zero Length
+-n  Non-Zero Length
+
+Z=pqr
+[ $Z \> ab ]
+
+
+
+File test
+
+	
+-f	File exists and is a ordinary file.
+-d	File exists and is a directory file.	
+-s	File exists and has size greater than 0	.
+-r	File exists and is readable.	
+-w	File exists and is writable.	
+-x	File exists and is executable.
+
+[ -f xyz ]
+Succeeds if ordinary file xyz exists.
+
+[ -d abc ]
+Succeeds if directory file xyz exists.
+
+[ -w file1 ] 
+Succeeds if user has write access to file1.
+
+
+
+Logical Operators
+
+-o    Logical OR
+-a    Logical AND
+!     Logical Not
+
+[ $X \> 100    -a    -r file1 ]
+
+Will succeed if X is greater than pqr and 
+user has read access to file1.

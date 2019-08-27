@@ -1,0 +1,8 @@
+x=5
+
+cat d | while read L 
+do
+
+echo  $L
+
+done

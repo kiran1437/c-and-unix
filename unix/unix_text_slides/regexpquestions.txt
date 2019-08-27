@@ -1,0 +1,35 @@
+Use the emp file for the following problems:
+
+1) Display the lines with empid begining with 'M'.
+
+2) Display the lines with empid begining with "M0".
+
+3) Display the lines with emoid begining with 'M' and not followed by a '0'.
+
+3) Display the lines with empid begining with M and the following number less than 300.
+
+Hint: Regular expression for numbers less than 70 is '[0-6][0-9]'
+
+4) Display lines with emp names begining with 'B'.
+
+5) Display lines with names begining with 'B' and belong to "design" group.
+
+6) Display lines with salary less than 9000.
+
+Use the regexpdata.txt file for the following problems:
+
+1) Display lines having '*' in them.
+
+2) Display lines ending in '$'
+
+3) Display lines ending in '*$'
+
+4) Display lines ending in '$*'
+
+5) What is the meaning of the regular expression '$*$'
+
+6) Display the lines with a '\'
+
+7) Display line with  '\\' .
+
+8) Display the lines with only one  '\'

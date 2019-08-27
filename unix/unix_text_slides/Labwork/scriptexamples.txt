@@ -1,0 +1,130 @@
+If:
+#check for user name first in passwd file
+#if not present , check in group file
+#user name passed as command line argument
+
+user=$1
+if grep "$user" /etc/passwd > /dev/null 2> /dev/null
+then
+	echo “$user” is a valid user…
+elif grep "$user" /etc/group > /dev/null 2> /dev/null
+then
+	echo “$user” is a valid group…
+ else
+	echo "Invalid user-name : $user"
+ fi
+
+
+
+#calulate bonus
+#test for numeric values
+
+echo "Enter salary :"
+read salary
+
+if test  "$salary" -le 1000
+then
+     bonus=1000
+elif test  "$salary" -gt 1000 -a "$salary" -lt 10000
+then
+     bonus=10000
+else
+     bonus=100000
+fi
+echo "Bonus : $bonus"
+
+
+
+#a copy program
+
+echo "Enter Source File : "
+read SF
+if [ -z "$SF" ]
+then
+	echo "Invalid Input !!!"
+	exit 1
+fi
+echo "Enter Destination File :"
+read DF
+if [ -z  “$DF" ]
+then
+	echo "Invalid Input !!!"
+	exit 2
+fi
+
+
+if [  -f   "$SF"   -a      -r   “$SF" ]
+then
+		cp "$SF" "$DF”
+else
+	echo "Invalid source File !!!"
+	exit 3
+fi
+exit 0
+
+
+
+The for Loop:
+
+
+For variable in word_list
+do
+	Statements
+done
+
+
+#Displays pen paper and pencil
+
+for name in pen pencil paper
+do
+	echo .$name.
+done
+
+
+
+
+#Displays the names of files in the current directory
+
+for file_name in *
+do
+	echo .$file_name.
+
+done
+
+#Displays the command line parameters
+
+
+for input in $*
+do
+	echo .$input.
+done
+
+
+
+#Displays the words in a file .DATA.
+
+
+for word in  `cat DATA`
+do
+	echo .$word.
+done
+
+
+
+
+Case statement:
+
+X=qwasdf
+case $X in
+pq*) echo case 1
+     ;;
+
+ab*) echo case 2
+     ;;
+
+qw*) echo case3
+     ;;
+*)   echo case 4
+     ;;
+
+esac

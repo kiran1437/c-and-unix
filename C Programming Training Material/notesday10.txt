@@ -1,0 +1,562 @@
+Structures & Unions
+---------------------
+
+Heterogenous collection of items.
+
+Structures are derived types as per C language. 
+
+struct  struct_tag { 
+                      int a;
+                      char b;
+                   }; 
+
+Struct_tag is a new type using which  variables(objects) 
+can be declrared further.
+ 
+
+struct struct_tag     object1, object 2, object3; 
+
+struct  struct_tag { 
+                      int a=10;
+                      char b;
+                   }; 
+No memory allocated so compilation error.
+
+int i = 30; 
+
+struct  struct_tag { 
+                      int a;
+                      char b;
+                   }; 
+
+struct struct_tag   s1={10,'x'}; 
+struct struct_tag   s1={10,'x'}, s2={20,'p'}; 
+
+struct struct_tag   s1={10}; 
+
+output:
+
+printf("%d\n", s1.a); 
+printf("%c\n", s1.b); 
+
+Input:
+
+scanf("%d\n", &s1.a); 
+scanf("%c\n", &s1.b); 
+
+
+
+    &s1.b =   &(s1.b) 
+
+
+. operator:
+--------------
+    s1.a
+    s1.b 
+Binary operator. Requires a Structure OR union object on the left side and a filed name from the structure or union on the right side. 
+
+struct struct_tag   s1={10,'x'}; 
+struct struct_tag   *sp=&s1; 
+
+sp is a pointer to struct struct_tag.
+
+-> operator
+-----------------
+
+sp    ->  a     -------- 10
+sp    ->  b     --------- 'x'
+
+printf("%d\n", sp->a); 
+printf("%c\n", sp->b); 
+
+Input:
+
+scanf("%d\n", &sp->a); 
+scanf("%c\n", &sp->b); 
+
+    &sp->b =   &(sp->b) 
+
+printf("%d\n", s1.a); 
+printf("%c\n", s1.b); 
+
+
+struct  struct_tag { int a; char b; } s1={10,'a'}, 
+                                      s2={20,'x'}, s3; 
+
+print the fields of s1, s2 and s3. 
+-------------------------------------------------------------------
+
+
+s1   > s2    ;  //Error 
+
+s1 == s2 ;        //Error 
+
+s1 >=  s2  ;  //Error 
+
+
+s1 = s2;   //   VALID....
+
+sizeof()  and address &  
+are supported. 
+
+.   and -> member access ops..
+
+-------------------------------------------------------
+sizeof of structure:
+struct X { 
+          int a; 
+          char b; 
+          }; 
+struct X { 
+          int a; 
+          char b; 
+          int c; 
+          }; 
+
+struct X { 
+          int a; 
+          char b; 
+          char b1; 
+          int c; 
+          }; 
+
+struct X { 
+          int a; 
+          char b; 
+          short b1; 
+          int c; 
+          }; 
+
+struct X { 
+          int a; 
+          char b; 
+          char b1;
+          short b2; 
+          int c; 
+          }; 
+struct X { 
+          int a; 
+          char b; 
+          short b2; 
+          int c; 
+          char b1;
+          }; 
+
+/* 8  * /
+struct X { 
+          int a; 
+          char b; 
+          }; 
+struct X { 
+          short a; 
+          char b; 
+          }; 
+
+struct X { 
+          short a; 
+          char b; 
+          char b1;
+          }; 
+struct X { 
+          char b1;
+          short a; 
+          char b; 
+          }X[3]; 
+
+
+X[0]   b1--1
+       padding ---1                           5
+       a  --- 2
+       b  -- 1
+
+X[1]   b1  --1 
+       a -- 2                                      4
+       b  --- 1
+
+so uniformly size is set at 6
+-------------------------------------------------------------------
+
+
+
+
+
+
+----------------------------------------------------------------
+Array of structures:
+---------------------
+ struct X  x[4];
+
+b field of the 4 th object in the array:
+x[3].b
+
+Read the values for all the fields of x and display back to the screen
+
+ &x[i].b
+
+
+Arrays in structures:
+----------------------
+struct student { int id;
+                 char name [20];
+                 int marks[3];
+               }; 
+
+struct student s1,s2;
+
+second subject marks of student one
+  s1.marks[1]
+
+  scanf -------  &s1.marks[i]
+
+  scanf("%19s", s1.name);
+ 
+   fgets(s1.name, sizeof(s1.name), stdin); 
+
+----------------------------------------------------------
+Structures within structures:
+
+struct X { int a; char b;} x  ;    //  x.a x.b 
+
+
+
+
+struct Y { int a; 
+           struct X x;
+           char b;
+        } y; 
+
+y.a  ----int 
+y.x  ---- struct X
+          y.x.a---- int
+          y.x.b---- char
+y.b  ---- char
+
+struct Y { int a; 
+           struct X x;
+           char b;
+         } y =  { 10, {20,'p'}, 'q'} ;  
+
+y.a  ----10
+          y.x.a---- 20
+          y.x.b---- 'p'
+y.b  ---- 'q'
+
+struct Y { int a; 
+           struct X x;
+           char b;
+         } y =  { 10, {20}, 'q'} ;  
+
+y.x.a---20
+y.x.b--- '\0'
+y.b  --- 'q'
+
+struct Y { int a; 
+           struct X x;
+           char b;
+         } y =  { 10, 20, 'q'} ;  
+
+y.x.a---20
+y.x.b--- 'q'
+y.b  ---'\0' 
+
+struct Y { int a; 
+           struct X x;
+           char b;
+         } y =  { 10, {20,'x','y'}  } ;  
+
+--------------------------------------------------------
+Incomplete structures:
+
+
+struct X ;    // Incomplete struct...
+
+struct X x;   // ERROR  ......
+
+struct X * xp=NULL;  // VALID ....
+
+Size of Pointer xp is not dependent on sizeof(struct X)
+
+sizeof( xp) will be pointer size..
+
+sizeof( struct X ) and sizeof( *xp) are unknown...
+
+so xp++ or xp + 1    //  undefined... behaviour
+
+struct X { int a; char b; };  // struct X COMPLETED
+
+struct X x;   // NOT AN ERROR  ......
+
+sizeof( struct X ) and sizeof( *xp) ARE KNOWN...
+--------------------------------------------------
+struct X { int a; char b;} ;
+
+struct Y { int a; 
+           struct Y x;
+           char b;
+         } y;  
+compilation error 
+Self containing structures-- not permitted in C 
+
+struct Y { int a; 
+           struct Y *sp;
+           char b;
+         } y;  
+
+
+y.sp --- pointer 
+self referential structures -- allowed in C
+-------------------------------------------------------
+
+struct X  { int a; char b;} x;     // tag & object 
+struct X  { int a; char b;};      //  tag
+struct    { int a; char b;} x1;   // object 
+
+No further objects of type x1 can be created. 
+
+struct    { int a; char b;} x1,x2,x3;   // valid objects 
+
+struct    { int a; char b;} y1;   // object 
+struct    { int a; char b;} y2;   // object 
+
+single-ton   objects 
+
+Can't be parameters to functions as formal parameter type 
+is required to be defined. 
+
+----------------------------------------------------------
+struct X { int a; char b;} ; 
+
+struct X *xp; 
+
+Pointer to a single ton object; 
+
+struct    { int a; char b;} x1 = {30, 'x'},x2,  *xp;  // object 
+
+&x1 --- Ptr to object x1
+
+&x1->a   &(x1->a)   ERROR 
+
+(&x1) ->a  -------30
+(&x1) ->b  --------'x'
+
+xp = &x1; 
+xp->a    x1.a    30
+xp->b    x1.b    'x' 
+
+
+struct salary { float basic;
+                struct  { float hra,lta,cona;} allowance;
+                float variablepay;
+              } s1,s2;
+
+
+
+s1.allowance.hra, s2.allowance.lta  ..............
+
+---------------------------------------------------- 
+
+
+
+differing types:
+----------------
+struct X { int a}x; 
+struct Y { int a}y; 
+int         i; 
+
+x and i are of differing types....
+
+struct X is a different type from struct Y 
+x and y are of differing types..
+
+x=y;   // ERROR 
+x = i; // ERROR 
+
+i=x.a; x.a = y.a;  y.a = x.a ; VALID...
+
+struct  { int a; } x;
+struct  { int a; } y;
+
+x=y;  y=x; //  Both invalid...
+
+--------------------------------------------------------
+
+Optimizing on Structure size:
+----------------------------
+
+struct X { char a;
+           int b;
+           char c;
+          }; 
+-------------------------------------------------------------------
+
+
+Bit fields:
+------------
+
+
+  struct X { int a:10;
+             int b:20;
+           } x ; 
+
+
+x.a
+x.b
+
+
+   struct X { int a:1;
+              int b:2;
+             } x;
+
+
+x.a
+x.b  
+         0                 0          0
+         0                 1          1
+         1                 0          -2
+         1                 1          -1`  
+        sign bit         data 
+
+x.a      1                            -1   
+         0                             0
+        sign bit 
+
+Use unsigned bit fields....
+
+   struct X { int a:20;
+              int b:15;
+             } x;
+--------------------------------------------------------
+
+union X { int a ; 
+          char b:
+        } x; 
+
+struct Y { int a ; 
+          char b:
+        } y; 
+
+print &x, &x.a, &x.b   sizeof(x) 
+print &y, &y.a, &y.b   sizeof(y) 
+
+
+
+x.a=0x12345678;
+    print x.b with %hhx
+
+
+x.b=0XAB;
+print x.a with %x
+
+x.a=0XABCDEFEF;
+
+print x.b  with %hhx
+
+
+
+
+
+
+
+
+Space for the largest field is allocated. 
+Alignment : With respect to all the fields 
+
+union Query { int id;
+                char name [20];
+              } q; 
+
+q.id  = 49; 
+<--20 bytes -------------------------------->
+-------------------------------------------
+|31|0|0|0|                                 |
+--------------------------------------------
+
+q.name ---> 1  // No point using name when id is filled
+
+
+
+q.name="hello"  //ERROR 
+strcpy(q.name,"hello");  
+q.id ---->  // No point using id when name is filled
+---------------------------------------------------
+
+
+No Linkage for Tags... OR typedef...
+-------------------------------------
+
+1)
+     file1.c                 file2.c         
+_________________________________
+struct X{        | 
+         int a;  | struct X x;  //ERROR                          
+         char b; |                  
+        };       |   main()  {}                   
+__________________________________
+
+     file1.c                 file2.c         
+__________________________________
+struct X{        | extern struct X; // Incomplete struct,
+                 |                  // No linkage
+         int a;  | struct X x;  //ERROR                          
+         char b; |                  
+        };       |   main()  {}                   
+________________________________
+
+
+     file1.c                 file2.c         
+_________________________________
+struct X{        | struct X { int a; char b;};
+                 |                
+         int a;  | exten struct X x; 
+         char b; |                  
+        }x;      | 
+                 |
+void f(void)     | int main(void)
+{                | {
+printf("%p\n",   |  printf("main: %p\n", 
+           &x);  |                &x);
+                 |  f();
+}                | }
+________________________________
+
+
+---------------------------------------------------
+
+VLAs in structures?
+
+f()
+{
+int a=3;
+
+struct  X { int p[a];
+            char b} x; 
+
+
+gcc does support VLAs in structures.....
+
+
+} 
+
+
+
+int i=10, j=i; 
+int i =i, j ; 
+
+struct X { int a; char b} x1={10,'a'} , x2, *xp=&x1;
+
+xp->a---- equal 10
+xp->b---- equal 'a'
+------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+

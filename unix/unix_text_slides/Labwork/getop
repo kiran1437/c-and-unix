@@ -1,0 +1,15 @@
+while getopts "lr:c::m" X
+do
+case $X in 
+l) echo  list option OPTIND = $OPTIND;;
+r) echo remove file $OPTARG OPTIND = $OPTIND;;
+c) echo copy file $OPTARG OPTIND = $OPTIND;;
+esac
+done
+
+echo shifting by $((OPTIND-1))
+shift $((OPTIND-1))
+
+echo args are -- $* --
+
+

@@ -1,0 +1,27 @@
+X[0]=hello
+y[3]=world
+X[1]=world
+X[2]=shell
+X[5]=pqr
+X[8]=abc
+echo ${X[12]}
+echo ${X[2]}
+history
+clear
+echo ${X[*]}
+echo ${#X[*]}
+Y=( hello world shell qwer qwer qwer weqasdfasdf )
+echo ${Y[0]}
+echo ${Y[*]}
+echo ${#Y[*]}
+echo ${#X[*]}
+X=( ${Y[*]} ) 
+echo ${Y[4]}
+echo ${X[4]}
+echo ${X[5]}
+echo ${X[6]}
+echo ${Y[6]}
+clear
+Z=( ABCD QWER ${X[*]} 1234 5678 90 ${Y[*]} PQR ) 
+echo ${Z[*]}
+echo ${#Z[*]}

@@ -1,0 +1,21 @@
+vi hello.c
+	i
+	write the program
+	ESC
+	:wq
+
+cat hello.c 
+
+cc hello.c 
+
+ls -l a.out
+./a.out  
+
+cc hello.c -o  hello
+./hello  
+
+rm hello 
+
+make hello 
+
+./hello  

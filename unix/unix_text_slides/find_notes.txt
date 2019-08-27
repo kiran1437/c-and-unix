@@ -1,0 +1,481 @@
+find d1 d2 d3  -name 'shell pattern'
+
+Files matching the shell pattern in the directory trees rooted at d1 d2 and d3.
+
+Ex: find /var /usr -name '*.log'
+    find .         -name '*.txt'
+    find .         -name abc
+
+Use -iname for case insensitive matching. 
+    find .         -iname abc
+will match Abc abC ABC...
+Quoting of the pattern is important, else shell expands:
+
+
+[srini@srini srini]$ ls *.h
+io.h
+
+[srini@srini srini]$ find . -name '*.h' | head -4
+./2.6.17/linux-2.6.17/arch/alpha/kernel/err_impl.h
+./2.6.17/linux-2.6.17/arch/alpha/kernel/irq_impl.h
+./2.6.17/linux-2.6.17/arch/alpha/kernel/machvec_impl.h
+./2.6.17/linux-2.6.17/arch/alpha/kernel/pci_impl.h
+
+
+[srini@srini srini]$ find . -name *.h | head -4
+./2.6.17/linux-2.6.17/drivers/isdn/hardware/eicon/io.h
+./2.6.17/linux-2.6.17/fs/befs/io.h
+./2.6.17/linux-2.6.17/include/asm-alpha/io.h
+./2.6.17/linux-2.6.17/include/asm-arm/arch-aaec2000/io.h
+--------------------------------------------
+
+
+find d1 d2 d3  -path 'shell pattern'
+
+The entire path name should match the shell patern.
+[srini@srini srini]$ ls -ld xyz
+drwxr-xr-x    5 srini    srini        4096 Oct 13 12:32 xyz
+
+[srini@srini srini]$ find xyz -path 'xyz/???/pqr*'
+xyz/abc/pqr
+xyz/abc/pqr/qwer
+xyz/abc/pqr/qwer/tyui
+xyz/abc/pqr/qwer/tyui/oplk
+xyz/abc/pqr/qwer/tyui/oplk/1234
+
+Just four lines from the next command:
+[srini@srini srini]$ find xyz -path 'xyz*'
+xyz
+xyz/makefile
+xyz/abc/pqr/qwer
+xyz/abc/pqr/qwer/tyui
+xyz/abc/pqr/qwer/tyui/oplk
+
+ipath for case insensitive matching.
+[srini@srini srini]$ find xyz -ipath 'XyZ/???/PqR*'
+xyz/abc/pqr
+xyz/abc/pqr/qwer
+xyz/abc/pqr/qwer/tyui
+xyz/abc/pqr/qwer/tyui/oplk
+xyz/abc/pqr/qwer/tyui/oplk/1234
+----------------------------------------------
+
+
+find dir1 dir2 -lname f1
+lname for matching  sym links TO THE file f1
+                                                                                
+[srini@srini srini]$ ls -l xyz/sf1
+lrwxrwxrwx    1 srini    srini           2 Jul 24 17:08 xyz/sf1 -> f1
+
+[srini@srini srini]$ find xyz -lname f1
+xyz/sf1
+
+[srini@srini srini]$ find xyz -ilname F1
+xyz/sf1
+
+where as sf1 can be found as follows:
+[srini@srini srini]$ find xyz -name sf1
+xyz/sf1
+-------------------------------------------------
+
+
+find dir1 dir2 -inum 706088
+Files with inode number equal to 706088. 
+
+find dir1 dir2 -inum -706088
+Files with inode number less than 706088. 
+
+find dir1 dir2 -inum +706088
+Files with inode number greater then 706088. 
+---------------------------------------------------
+
+
+find dir1 dir2 -links 2
+To find files that have a link count equal to 2. 
+
+find dir1 dir2 -links +2
+To find files that have a link count greater than 2. 
+
+find dir1 dir2 -links -2
+To find files that have a link count less than 2. 
+
+find dir1 dir2 -links -1
+To find files that have a link count less than 1. 
+The above command finds 'nothing' but still searches.
+----------------------------------------------------
+
+Working with file sizes:
+
+srini@Srini:~/tmp> ls -l
+total 124
+-rw-r--r-- 1 srini users   22 2006-07-22 00:40 abc
+-rw-r--r-- 1 srini users    0 2006-11-20 13:53 C
+-rwxr-xr-x 1 srini users 9650 2006-10-28 13:42 convert
+-rw-r--r-- 1 srini users  750 2006-10-28 00:08 convert.c
+-rw-r--r-- 1 srini users   98 2006-10-14 10:21 out
+-rw-r--r-- 1 srini users 5684 2006-10-14 12:19 p123
+-rw-r--r-- 1 srini users 2842 2006-10-14 12:19 passwd
+-rw-r--r-- 1 srini users 1814 2006-11-10 14:45 reply
+-rw-r--r-- 1 srini users  500 2006-10-11 10:32 schedule.txt
+-rw-r--r-- 1 srini users  284 2006-11-10 22:11 t
+-rw-r--r-- 1 srini users  750 2006-10-28 00:07 t.c
+-rw-r--r-- 1 srini users  750 2006-10-28 00:06 t.c~
+
+# file sizes between 1 * 512  and 2 * 512  bytes
+srini@Srini:~/tmp> find . -size 2
+./convert.c
+./t.c~
+./t.c
+# file sizes less than  2 * 512  bytes
+srini@Srini:~/tmp> find . -size -2
+./t
+./out
+./C
+./abc
+./schedule.txt
+
+# file sizes greater than  2 * 512  bytes
+srini@Srini:~/tmp> find . -size +2
+.
+./convert
+./passwd
+./p123
+
+Default unit for size is 512 bytes. Can be modified using a suffix:
+
+c    bytes
+k    kilobytes (1024 bytes)
+w    2-byte words
+
+find dir1 dir2 -size 2
+Files whose size rounded up by a unit of 512 equals 2 * 512
+
+find dir1 dir2 -size 100c 
+
+find dir1 dir2 -size 2k   
+File size rounded up by a unit of 1024 equals  equals 2 * 1024
+
+find dir1 dir2 -size 8w  
+File size exactly 8 * 2 = 16 bytes
+
+[srini@srini td]$ find -size 3
+./a/passwd
+./passwd
+./.passwd
+[srini@srini td]$ ls -ld /a/passwd ./passwd ./.passwd
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:20 ./a/passwd
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 ./passwd
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 ./.passwd
+[srini@srini td]$
+
+1409 rounded up by unit of 512 is equal to 3 * 512.
+
+$find dir1 dir2 -size -4
+
+Files with sizes, rounded up by a unit of 512,  is less than equal to 4 * 512 bytes.
+
+[srini@srini td]$ find -size -4
+./f
+./sf
+./a/passwd
+./hf
+./passwd
+./.passwd
+./xyz
+[srini@srini td]$ ls -l ./f ./sf ./a/passwd ./hf ./passwd ./.passwd ./xyz
+-rw-r--r--    2 srini    srini           9 Sep 22 17:18 ./f
+lrwxrwxrwx    1 srini    srini           1 Sep 22 17:10 ./sf -> f
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:20 ./a/passwd
+-rw-r--r--    2 srini    srini           9 Sep 22 17:18 ./hf
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 ./passwd
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 ./.passwd
+-rw-rw-r--    1 srini    srini           0 Oct 15 16:13 ./xyz
+
+The size of a soft link itself is counted and not that of the file it points to. 
+------------------------------------------------------------------
+find -empty 
+to find empty files and directories.
+
+[srini@srini td]$ ls -l
+total 16
+drwxrwsr-x    2 srini    srini        4096 Oct 13 17:20 a
+-rw-r--r--    2 srini    srini           9 Sep 22 17:18 f
+-rw-r--r--    2 srini    srini           9 Sep 22 17:18 hf
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 passwd
+-rw-rw-r--    1 srini    srini           0 Oct 15 16:44 PQR
+lrwxrwxrwx    1 srini    srini           6 Oct 15 16:41 sf -> passwd
+-rw-rw-r--    1 srini    srini           0 Oct 15 16:13 xyz
+[srini@srini td]$ mkdir empty_dir
+[srini@srini td]$ find -empty
+./xyz
+./PQR
+./empty_dir
+[srini@srini td]$ ls -ld empty_dir/
+drwxrwsr-x    2 srini    srini        4096 Oct 15 16:45 empty_dir/
+[srini@srini td]$
+For directories if the only entries are . and .. the directory is considered empty.
+---------------------------------------------------------------------
+
+
+find -type TYPE 
+TYPE can be :
+b         block (buffered) special
+c         character (unbuffered) special
+d         directory
+p         named pipe (FIFO)
+f         regular file
+s         socket, UINX domain
+
+[srini@srini td]$ find -type d
+.
+./a
+./empty_dir
+-------------------------------------------------------------------
+
+
+srini@Srini:~/tmp> find . -size -2 -exec echo "Found {}" \;
+Found ./t
+Found ./out
+Found ./C
+Found ./abc
+Found ./schedule.txt
+
+srini@Srini:~/tmp> find . -size -2 -exec echo 'Found {}' \;
+Found ./t
+Found ./out
+Found ./C
+Found ./abc
+Found ./schedule.txt
+
+srini@Srini:~/tmp> find . -size -2 -exec file '{}' \;
+./MYPROG.c: ASCII C program text
+./t: ASCII text
+./out: ASCII text
+./C: empty
+./abc: ASCII text
+./schedule.txt: ASCII text
+
+All occurrences of '{}' is replaced by the found item and the command is executed. 
+
+srini@Srini:~/tmp> find . -size -2 -exec echo 'Found {} and again {}' \;
+Found ./MYPROG.c and again ./MYPROG.c
+Found ./t and again ./t
+Found ./out and again ./out
+Found ./C and again ./C
+Found ./abc and again ./abc
+Found ./schedule.txt and again ./schedule.txt
+srini@Srini:~/tmp>
+
+The Command should be terminated by an individual escaped or quoted argument of ;
+
+srini@Srini:~/tmp> find . -size -2 -exec echo  Found '{}' ';;' \;
+Found ./MYPROG.c ;;
+Found ./t ;;
+Found ./out ;;
+Found ./C ;;
+Found ./abc ;;
+Found ./schedule.txt ;;
+srini@Srini:~/tmp> 
+
+The command should be single and no compund commands are allowed like in the following:
+
+srini@Srini:~/tmp> find . -size -2 -exec echo 'Found {}' && file {} \;
+find: missing argument to `-exec'
+Reason being find itself is terminated by && and file is considered to be the right side command of && compund command like in 'cat f1 && file f1'
+
+srini@Srini:~/tmp> find . -size -2 -ok rm '{}' \;
+< rm ... ./MYPROG.c > ? n
+< rm ... ./t > ? y
+< rm ... ./out > ? y
+< rm ... ./C > ? n
+< rm ... ./abc > ? y
+< rm ... ./schedule.txt > ? n
+srini@Srini:~/tmp> find . -size -2
+./MYPROG.c
+./C
+./schedule.txt
+srini@Srini:~/tmp> 
+
+--------------------------------------------------------------------
+find -perm MODE   Permissions  exactly equal to MODE
+find -perm -MODE  All the permissions on MODE are set
+find -perm +MODE  Atleast one of permissions in MODE set
+MODE can be symbolic or numeric
+
+find . -perm g+w,o+w
+    Files should have ONLY group and others write
+    No Other permission allowed
+     RWXRWXRWX
+    -----w--w-
+
+find . -perm -g+w,o+w
+    Files should have BOTH group and others write
+    Any other permission allowed
+     RWXRWXRWX
+    -rwx-w--w-
+    -----wx-w-
+    -----w-rw-
+
+find . -perm +g+w,o+w
+    Files should have ONE OF group or others write
+    Any other permission allowed
+     RWXRWXRWX
+    -----w----
+    --------w-
+    -r-x----w-
+
+[srini@srini td]$ ls -l
+total 20
+drwxrwsr-x    2 srini    srini        4096 Oct 13 17:20 a
+drwxrwsr-x    2 srini    srini        4096 Oct 15 16:45 empty_dir
+-rwxr--r--    2 srini    srini           9 Sep 22 17:18 f
+-rwxr--r--    2 srini    srini           9 Sep 22 17:18 hf
+---x--x--x    1 srini    srini        1409 Oct 13 17:18 passwd
+-rw-rw-r-x    1 srini    srini           0 Oct 15 16:44 PQR
+lrwxrwxrwx    1 srini    srini           6 Oct 15 16:41 sf -> passwd
+-rw-rw-r--    1 srini    srini           0 Oct 15 16:13 xyz
+
+Pemrissions of ./a are drwxrwsr-x.  
+Lower case 's' stands for setguid + execute
+Upper case 'S' stands for setguid - execute
+
+[srini@srini td]$ find -perm u+x,g+x,o+x -exec ls -ld {} \;
+---x--x--x    1 srini    srini        1409 Oct 13 17:18 ./passwd
+
+[srini@srini td]$ find -perm -g+x,o+x -exec ls -ld {} \;
+drwxr-xr-x    4 srini    srini        4096 Oct 15 16:45 .
+lrwxrwxrwx    1 srini    srini           6 Oct 15 16:41 ./sf -> passwd
+drwxrwsr-x    2 srini    srini        4096 Oct 13 17:20 ./a
+---x--x--x    1 srini    srini        1409 Oct 13 17:18 ./passwd
+drwxrwsr-x    2 srini    srini        4096 Oct 15 16:45 ./empty_dir
+
+
+[srini@srini td]$ find -perm +g+x,o+x -exec ls -ld {} \;
+drwxr-xr-x    4 srini    srini        4096 Oct 15 16:45 .
+lrwxrwxrwx    1 srini    srini           6 Oct 15 16:41 ./sf -> passwd
+drwxrwsr-x    2 srini    srini        4096 Oct 13 17:20 ./a
+---x--x--x    1 srini    srini        1409 Oct 13 17:18 ./passwd
+-rw-rw-r-x    1 srini    srini           0 Oct 15 16:44 ./PQR
+drwxrwsr-x    2 srini    srini        4096 Oct 15 16:45 ./empty_dir
+
+Notice, PQR has only others execute set. 
+--------------------------------------------------------------------
+Conditions on times:
+-atime n
+-mtime n
+-ctime n
+
+File operation performed n * 24 hrs back,  rounded upwards by a unit of 24 hrs.
+
+[srini@srini srini]$ date
+Mon Oct 16 22:06:47 IST 2006
+
+[srini@srini srini]$ find  -mtime 1 -exec ls -ld {} \; | head -4
+-rw-rw-r--    1 srini    srini         356 Oct 15 16:01 4112-1319635181.ms
+drwxrwxr-x    3 srini    srini        4096 Oct 15 16:11 ./xyz/abc
+-rw-rw-r--    1 srini    srini           0 Oct 15 16:12 ./xyz/PQR
+[srini@srini srini]$
+
+[srini@srini td]$ date
+Mon Oct 16 22:16:41 IST 2006
+
+[srini@srini td]$ find  -mtime 0 -exec ls -ld {} \; | head -4
+drwxr-xr-x    4 srini    srini        4096 Oct 16 16:35 .
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 ./a
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 ./empty_dir
+-rw-r--r--    1 srini    srini        1409 Oct 16 16:25 ./passwd
+
+[srini@srini td]$ ls -l
+total 20
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 a
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 empty_dir
+-rw-r--r--    1 srini    srini        1409 Oct 16 22:19 passwd
+-rw-rw-r--    1 srini    srini        4227 Oct 16 22:20 t1
+
+[srini@srini td]$ date
+Mon Oct 16 22:22:57 IST 2006
+
+[srini@srini td]$ find -mmin -10
+./passwd
+./t1
+[srini@srini td]$ find -mmin -10 -exec ls -ld {} \;
+-rw-r--r--    1 srini    srini        1409 Oct 16 22:19 ./passwd
+-rw-rw-r--    1 srini    srini        4227 Oct 16 22:20 ./t1
+
+[srini@srini td]$ find -mmin +10 -exec ls -ld {} \;
+drwxr-xr-x    4 srini    srini        4096 Oct 16 16:35 .
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 ./a
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 ./empty_dir
+-rw-r--r--    1 srini    srini        1409 Oct 13 17:18 ./.passwd
+[srini@srini td]$
+
+[srini@srini td]$ ls -l
+total 20
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 a
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 empty_dir
+-rw-r--r--    1 srini    srini        1409 Oct 16 22:19 passwd
+-rw-rw-r--    1 srini    srini        4227 Oct 16 22:26 t1
+
+[srini@srini td]$ date
+Mon Oct 16 22:27:22 IST 2006
+
+[srini@srini td]$ touch t1
+[srini@srini td]$ ls -l
+total 20
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 a
+drwxrwxr-x    2 srini    srini        4096 Oct 16 16:25 empty_dir
+-rw-r--r--    1 srini    srini        1409 Oct 16 22:19 passwd
+-rw-rw-r--    1 srini    srini        4227 Oct 16 22:27 t1
+
+
+[srini@srini td]$ date
+Mon Oct 16 22:28:01 IST 2006
+[srini@srini td]$ find -mmin 1
+./t1
+[srini@srini td]$ find -mmin 1 -exec ls -ld {} \;
+-rw-rw-r--    1 srini    srini        4227 Oct 16 22:27 ./t1
+[srini@srini td]$ date
+Mon Oct 16 22:28:17 IST 2006
+[srini@srini td]$
+
+---------------------------------------------------------------------------
+Controlling depth:
+
+srini@Srini:~/tmp> find -empty
+./t
+./out
+./C
+./ctest/b
+./ctest/a
+./abc
+./ifles/d1
+./ifles/d2/d1
+./ifles/d3
+./abcd
+
+srini@Srini:~/tmp> find .  -maxdepth 1 -empty
+./t
+./out
+./C
+./abc
+./abcd
+srini@Srini:~/tmp> 
+
+srini@Srini:~/tmp> find .  -maxdepth 2 -empty
+./t
+./out
+./C
+./ctest/b
+./ctest/a
+./abc
+./ifles/d1
+./ifles/d3
+./abcd
+
+srini@Srini:~/tmp> find .  -mindepth 2 -empty
+./ctest/b
+./ctest/a
+./ifles/d1
+./ifles/d2/d1
+./ifles/d3
+srini@Srini:~/tmp> 

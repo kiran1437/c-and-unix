@@ -1,0 +1,18 @@
+
+
+trap ' echo in signal ; 
+       rm -f tempfile;
+       exit 10 '     INT 
+
+touch tempfile
+
+read X
+
+if [ $X -eq 0 ] 
+then exit 1 ;
+else echo in else;
+fi
+
+rm  tempfile
+
+

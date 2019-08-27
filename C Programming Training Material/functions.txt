@@ -1,0 +1,168 @@
+functions:
+                  FORMAL PARAMETERS
+void  funcname1(int    a, int   b)
+{
+int c; 
+c=a; a = b; b=c; 
+return;
+} 
+void  funcname1(int   & a, int  &  b);// Error no reference ops
+                  FORMAL PARAMETERS
+void  funcname2(int *   a, int *  b)
+{
+int c; 
+c=*a; *a = *b; *b=c; 
+return;
+} 
+int main(int argc, char * argv[])
+ {
+ int x=10, y=20;
+
+                  ACTUAL PARAMETERS
+ funcname1(      x,       y   ) ;
+                  ACTUAL PARAMETERS
+ funcname2(      &x,     &y    );
+
+ printf("x=%d  y=%d\n", x, y); 
+ return 0;
+ } 
+------------------------------------------------------------
+
+Passing arrays:
+-----------------
+
+int f (int *ip)
+{
+  *ip = 70;
+  *(ip + 1) = 80;
+  ip[1] = 80;
+}
+int g (int B[10])
+{
+  B[0] = 100;
+  B[1] = 200;
+}
+int main ()
+{
+  int A[10] = { 10, 20, 30 };
+  f (A);
+  printf ("%d%d%d", A[0], A[1], A[2]);
+  g (A);
+  printf ("%d%d%d", A[0], A[1], A[2]);
+}
+
+--------------------------------------------------------
+
+int main(int argc, char * argv[])
+ {
+ char name [12];
+ gets(name);
+ return 0;
+ } 
+
+----------------------------------------------------
+int f1(int * i) ; 
+  
+int a; 
+int * f2 ( int ) 
+{ 
+return &a; 
+}  
+
+
+
+int * f3 ( int ) 
+{ 
+static int b; 
+return &b; 
+}  
+
+
+
+
+/*       A will treated like int * A; */
+int f4(int A[10])
+{
+A[1]= 20; 
+A[5] = 30; 
+int i; 
+A = &i; 
+} 
+
+
+/*       D will be teated like   int (*D)[10]; */
+int f5 ( int D[5][10])
+{
+sizeof( D) ;
+D[1][1] = 10;
+D[2][2] = 20; 
+} 
+char P[20]= "ABCDEF";
+void    f6 ( char X[20]) {    X = P; 
+strcpy(X, "12345"); return;  } 
+
+int main(int argc, char * argv[])
+ {
+ int x = 10, y=20; 
+                    ACTUAL PARAMETERS 
+   int B[10] = {0} ; 
+   f4(B); 
+
+   What will be values of B[1]   & B[5] ? 
+
+    int C [ 3] [10] = { 0} ; 
+
+     f5(C); 
+        C[1][1] ,   C[2][2] ??? 
+
+    char X[50] = "hello";
+           f6(X) ; 
+ return 0;
+ } 
+
+---------------------------------------------------------
+
+int f ( int a)  { ..................    } 
+int h ( int a)  { ..................    } 
+int * g( int a)  { ...................} 
+
+int (*fp) (int a);
+
+
+    fp =    f ;        
+     (*fp) (10) ;   --- > executes f(10); 
+       fp  ( 10) 
+
+    fp =    h ;        
+     (*fp) (10) ;   --- > executes h(10); 
+       fp  (10) 
+
+ int i, *ip = &i; 
+        *ip = 10; 
+int A[10]; 
+ ip = A;     A;                A[1]; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

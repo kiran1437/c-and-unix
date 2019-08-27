@@ -1,0 +1,376 @@
+UNIX OS
+IO and Filters
+Terminal Files
+Terminal
+Keyboard and Display
+Terminal Operations
+Output goes to Display
+Input from keyboard
+Terminal file allocated on login
+/dev/tt1
+/dev/pts/4
+Terminal file refered to as “tty”
+
+
+
+Terminal I/O
+$ cat > f1
+Hello
+World
+Ctrl-d 
+
+$ tty
+<YOUR_tty>
+
+$ cp f1 <YOUR_tty>
+$ cp <YOUR_tty>  f1
+Working with files..
+char buf1[256], buf2[256];
+int retval;
+
+int fd = open(“f1”, O_RDWR);
+    
+retval = read(fd, buf1, 40);
+
+retval = write(fd, buf2, 50);
+    
+retval = read(fd, buf1, 50);
+
+close(fd);    
+File Descriptors
+Std I/O
+echo Hello world
+Writes to Stdout
+
+cat f1
+Reads from f1
+Writes to Stdout
+
+ls –l  
+Writes to Stdout
+
+
+Std I/O
+who
+Writes to Stdout
+
+ls –l  f1 NoFile 
+Details of f1 to Stdout
+Error message to Stderr
+
+Shell I/O Redirection
+Stdout Redirection
+Stdout redirection
+Implemented by Shell
+
+ls –l  >  outfile
+Truncate outfile
+Create outfile if not present
+Arrange Stdout to outfile
+Delete ‘> outfile’ 
+Execute ls –l
+Stdout redirection
+Stdout redirection
+$ echo hello > outfile world 
+
+$ cat f1 f2 > outfile
+$ cat outfile
+
+$ cat f1 > outfile  f2
+$ cat outfile
+Stdout redirection
+$ cat outfile > outfile
+$ cat outfile
+$ ls –l  outfile     #file size?
+
+$ > outfile ps
+$ cat outfile
+
+$ > outfile
+$ cat outfile
+
+Stderr redirection
+ls -l f1   NoFile  f2    > outfile
+ls -l f1   NoFile  f2   2> errors
+ls -l f1   NoFile  f2 2  > outfile
+
+ls -l f1 NoFile > out   2> errors
+
+ls -l f1 NoFile > out   2> out
+Files..
+$ cat > data
+Hello   world file for filters.
+Every first     program should be 
+hello     world one. Fate of 
+programs not     beginning with 
+hello    world is not known.
+Ctrl-d 
+
+$ touch f1 f2
+Filters
+cat data
+Reads from data
+Writes to Stdout
+
+cat
+Reads from Stdin
+writes to Stdout
+Filters
+$ sort data
+$ sort
+$ cat data
+
+$ grep world data
+$ grep world
+
+Filters
+$ wc    data
+$ wc –c data
+$ wc –w data
+$ wc –l data
+
+$ wc 
+Filters
+UNIX text processing commands
+
+Command line argument(s) provide names of files to be processed
+
+Text from Stdin is processed if no file name argument
+
+Result is written to Stdout
+
+Source file not modified
+Filters
+cat
+cut
+grep, egrep and fgrep
+less
+more
+sort
+tr
+wc
+
+awk
+perl
+python
+sed
+
+Non Filters
+$ ls data
+$ ls
+
+$ rm data
+$ rm
+
+$ cp f1 f2
+$ cp
+
+$ ps
+
+
+Count logged in users
+Print the count of logged in users.
+
+
+Count logged in users
+Print the count of logged in users.
+
+$ who 
+$ who > users_file
+$ wc –l users_file
+
+$ rm users_file
+
+Pipes
+         Command1 | Command2
+
+Pipe Lines
+$ who
+$ who       |   wc -l
+
+$ who       | grep YourID 
+$ who       | grep YourID   | wc -l
+
+$ ls –ld f*
+$ ls –ld f* |    wc -l
+
+Pipe Lines
+Print the string length of UNIX
+
+Pipe Lines
+Print the string length of UNIX
+
+$ wc   –c UNIX
+
+$ echo    UNIX   |  wc –c
+
+$ echo -n UNIX   |  wc –c
+Stderr piped?
+
+$ ls –l f1 NoFile f2
+
+
+$ ls –l f1 NoFile f2    |    wc 
+Wrong usage of pipes
+No output from first command
+
+$ cp data data_copy  |   wc
+$ rm data_copy       |   wc 
+
+Non Filters
+
+$ ls    |   ps
+$ ps    |   ls
+
+Filters with arguments
+
+$ who   |   wc data
+$ who   |   wc 
+
+
+Pipe Lines
+$ who     | grep YourID | wc -l
+
+Command1 | Command2    | Command3
+
+Command1 should write to Stdout
+
+From Command2 onwards
+
+Should be filters
+
+Shouldn’t have filename argument
+Transliteration
+$ tr abc PQR
+
+$ tr –d abc
+
+$ tr –d ‘ ‘
+
+$ tr –s abc
+
+$ tr –s ‘ ‘
+Transliteration
+With Stdin redirection
+
+$ tr  ‘a-z’ ‘A-Z’  < data
+
+$ tr –s ‘ ‘        < data
+
+With Pipe
+
+$ cat data | tr ‘a-z’ ‘A-Z’
+
+$ cat data | tr –s ‘ ‘
+emp file
+cat > emp
+M285:Raghu:mrktng:sales:12000
+I024:Vasu:software:testing:9000
+I392:John:software:design:15000
+M352:Shenoy:mrktng:adv:11000
+I004:Bhanu S:software:design:8000
+M046:Bharath:mrktng:adv:9000
+I020:Sam:software:testing:12000
+M004:Hari:mrktng:sales:9000
+Ctrl-d
+
+Head and tail
+$ head /etc/passwd
+                   First 10 lines
+$ head -3   emp
+
+$ tail /etc/passwd
+                   Last 10 lines
+$ tail -3   emp
+
+$ cat emp
+
+$ tail +3 emp
+From emp file
+Display first 5 lines
+
+Display 3rd to 5th lines 
+
+Display last  4 lines
+
+Display 4th to 7th lines
+
+Cutting chars
+$ cut –c 1       emp
+
+$ cut –c 1,4     emp
+
+$ cut –c 1-4     emp
+
+$ cut –c 5-10    emp
+
+$ cut –c 5-      emp
+
+$ cut –c 1,3-5   emp
+Cutting fields
+$ cut  –d :   -f 2,4    emp
+
+$ cut  –d :   -f 2,4,5  emp 
+
+$ cut  -d :   -f 2-4    emp
+Cutting fields
+Display Id, Name and Dept
+Display Id, Name, and Salary
+Hide the group field
+
+
+Display File sizes and names in home dir. 
+The 5th  and 9th  fields from ls
+Reduce ‘ ‘ with tr –s ‘ ‘
+Use cut
+
+Cutting fields
+Display Name and Id
+Save only Name field to file t1
+Save only Id   field to file t2
+What is result of
+ cat    t1     t2
+Use paste command
+ paste  t1     t2
+ paste  t1     t2  -d :
+Sorting
+Sort file1 file2 file3..
+
+Options
+n Numeric
+r Reverse
+u Unique
+o output_file
+
+t field seprator
+k filednum1,fieldnum2
+Sorting
+$ sort -t : -k 2,2   emp
+
+$ sort -t : -k 3,3   emp
+
+$ sort -t : -k 5,5   emp
+
+$ sort -t : -k 5,5n  emp
+
+$ sort –t : -k 5,5nr emp
+Sorting
+
+$ sort -t : -k 3,3           emp
+$ sort -t : -k 3,4           emp
+$ sort -t : -k 4,4           emp
+
+$ sort -t : -k 3,3           emp
+$ sort -t : -k 3,3  -k5,5n   emp
+$ sort -t : -k 3,3r -k5,5n   emp
+$ sort -t : -k 3,3r -k5,5nr  emp
+Sorting
+Display the list of files from home directory in increasing sizes
+Use ls –l 
+Reduce spaces using tr –s ‘ ‘
+Numeric sort on 5th field 
+
+Display filename and size of the largest file in home directory
+
+
+

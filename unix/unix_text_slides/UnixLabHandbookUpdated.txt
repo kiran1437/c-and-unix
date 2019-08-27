@@ -1,0 +1,541 @@
+﻿SESSION-1
+
+1.Logon to your Unix Login account
+2.Change the Password of your account (use passwd command)
+3.Observe the directory where you are placed (use pwd )
+4.List the contents of your home directory
+5.List out the hidden files
+6.Create a directory structure as below under your home directory
+7.Create files india1 and india2 under india , delhi1 and delhi2 under delhi  and likewise under all other directories.
+8.Change the directory from home to bangalore.
+9.Copy file bangalore1 from bangalore to karachi.
+10.Change directory to india from bangalore.
+11.Move file delhi1 to mumbai.
+12.List the contents of mumbai from current directory  which is india.
+13.Copy all files bangalore1 and bangalore2 from bangalore to lahore with a single command.
+14.View the contents of  lahore from india.
+15.Give the command ls  -l  and observe the output. 
+16.Give the command cat india1 and then the command ls –l again.observe the output and check whether there is a change in the time column.
+
+
+SESSION-2
+
+1.Create a file ADDRESS and store the names of your friends, their addresses and phone numbers. Each line should contain a friend's detail.
+2.Display the number of lines, words and characters in the file.
+3.Display only the number of lines in the file.
+4.View the file one page at a time.
+5.Create a directory called Friends and copy this file into the directory.
+6.Display a banner that reads Welcome Friends.
+7.Create 2 files with the names of your favourite cricketers and try out cmp, comm and diff on them.
+8.Display the time when you logged on to the system.
+9.Display the names of all those who are logged on to the system and store the result in a file WHOLIST.
+10.View the calendar for the previous , current and next months of the current year with a single command.
+11.Display the date in the format DATE IS dd-mmm-yyyy ( Ex. DATE IS 12-dec-2000 )
+12.Store the details of all those logged on to the same file WHOLIST with the existing details.
+13.Use man and check out the other options with date.
+14.Display the number of files present in your current directory
+15.Display the listing of all filenames starting with Z followed by any digit and ending with S.There can be any number of characters between the digit and S.
+
+
+
+SESSION-3
+
+Create a file ITEMS having the following data.  Fields are item code-description-rate-QOH-order placed (n for no and y for yes)
+i006-rexin-100-100-y
+i002-screws-12-23-n
+i001-bolts-123-120-n
+i005-rubber-10-10-y
+i003-plastic-10-100-n
+i004-nuts-200-100-y
+i002-screws-12-23-n
+i001-bolt-123-120-n
+1.Display items for which order is not placed.
+2.Display the description and order placed fields  for all the items.
+3.Display the description and order placed fields  for items for which order is placed.
+4.Arrange the file in the order of description.
+5.Display duplicate lines if any in the file ITEMS
+6.Display lines that contain only 10 in them
+7.Display all the items with item number displayed with only one zero (ex. i001 as i01)
+8.Display all lines where QOH is less than 50
+9.Display the last 2 lines of the file ITEMS
+10.Sort the file in the order of rate and store it in a file RATE
+11.Change the field seperator from - to : in the file RATE
+12.Display rate and description of item  (in that order ) from file RATE
+13.Display the count of lines that have “screws” in them.
+14.Display the lines that donot contain “bolts” in them.
+
+
+Create a file called STORES which has the following data :
+i006:ammonia:100:100:123:n
+i004:rexin:23:12:12:y
+i002:screws:200:100:175:y
+i001:nuts:10:100:175:n
+i003:bolts:123:120:120:n
+i005:rubber:10:10:10:y
+i002:screws:200:100:175:y
+i007:bolt:123:120:120:n
+The fields are item number, description, QOH, ROL, ROQ, status(y of those items for which an order has been placed. N denotes that no order has been placed for that item.)
+
+1.Arrange the file in the order of item number.
+2.Display the item number, description and the reorder quantity.
+3.Display the item number, description and the reorder quantity only for those items for which an order is placed.
+4.4. Display only the description (in the ascending alphabetical order) and store the sorted result in            
+5.a file called sorted.
+6. Sort the file in the order of QOH and display item number and QOH in that order.
+7. Display the duplicate lines in the files.
+8. Display the first 3 lines of the file sorted.
+9. Display only the item numbers that too with only one 0. i.e. I001 should be displayed as I01.
+10. Display the number of lines that contains a 100 in it.
+11. Display only those records for which the QOH field is less than 100.
+12. Display the details in the order description:item number:ROL:QOH.
+13. Sort the file in the order of QOH within Description which should be in the descending    
+14. Alphabetical order and store it in a file which has your name. Using the same command line,  
+15. Display the first 4 lines on the screen also.
+16. Display the entire records in the file but the field separator should be a hyphen(-) instead of   
+17. colons (:).
+18. Display those records which does not contain 10 in it.
+19. Display the records as
+ item number 	description 	QOH
+
+Note that the field separator has to be a tab character.
+
+Utilise the rest of the time to familiarise with the vi editor.
+
+
+SESSION-4
+
+1.Open vi editor and create a file STUD containing the following data
+s002:akash:unix:89:78
+s004:zeenat:c:34:90
+s005:zaira:vb:56:82
+s001:puja:oracle:90:63
+2.Save the file.
+3.Copy line number 1 below line number 4.
+4.Above the line 1 add the text STUDENT DETAILS
+5.Move line 2 below the line containing code s004.
+6.Copy lines 1,2 & 3 at the end of existing lines.
+7.Search for the pattern puja (using editor command) in the file and delete it.
+8.Save the file and quit editor.
+9.Sort the file STUD(in the background) on student code and store the result in the same file.
+10.Give the ps command and observe the output.
+11.Give the command ls –l and observe the permissions for the file STUD.
+12.Give execute permissions for all the category of users for file STUD, and observe the same with ls -l.
+13.Give write permissions for group and others  for file STUD(use octal notation ), and observe the same with ls -l.
+14.Remove the write permission for the user (owner) for STUD and try modifying the file.
+15.Create a directory named DIR .Remove execute permissions for DIR for the user(owner)
+16.Change the directory to DIR. Is it possible .If no , what is the solution.
+17.Create a student data file in vi which contains the details of all your friends (a minimum of 25     records). Each record should contain the following details : Student Number, Student Name,     Batch Number, Marks In Exam1, Marks In Exam2. The field separator should be a colon.
+18.Give the command to sort the above mentioned file in the order of Batch Code in the       background. Make sure that the sorted data gets stored in the same file.
+19.Display a long listing of your home directory. Store the details in a file called list by giving a
+20.command in the same line.
+21.Check whether the sorting is still going on, in the background. If so, terminate it.
+22.Display only the filename and the size of all the ordinary files in your home directory.
+23.Repeat the above command by taking the input from the file list instead of directly taking it   
+24.from the Is command.
+25.Display the names of all files which has a rwx permission for the group.
+26.Display the names of only those files that are executable.
+27.Display the number of ordinary files in your directory.
+28.Check what are the processes that are running now.
+29.Issue the command to terminate the entry with the name sh.
+30.Send a message to another user asking for his floppy diskette.
+31.Check whether you have a mail.
+32.Utilise some time in getting accustomed to the internal commands of mail.
+33.Display the contents of student data file without any colons.
+34.Display the contents of student file in the alphabetical order of Student Name (Only the Batch
+35.Code and Student Name has to be displayed).
+
+
+SESSION-5
+
+IWrite shell scripts for the following
+
+1)Accept a word and a filename. Check whether the pattern exists in the filename. If it exists display File <filename > contains the pattern <pattern> else display error message that the pattern <pattern> doesnot exist in the file <filename>.
+
+2)Accept 2 filenames. If the files are similar display a message Both the files are similar . Prompt the user for the name of file to delete among these 2 and delete the named file. After deletion a message File <filename> successfully deleted should be displayed.
+
+3)Display a directory listing as follows for all the filenames in the named directory and finally the total number of files
+Directory name is  <dirname>
+Filename	permissions	size
+-     		        -		  -	
+Total files is 	<total>
+
+4)Accept the following data , validate them and store in a file Student
+Student code
+Student name
+Batch code
+Marks1
+Marks2
+Marks3
+Validations:
+i)Student code should be unique. It can contain only alphabets and digits.
+ii)Student name can contain only alphabets and space.
+iii)Batch code can contain only alphabets and digits.
+iv)Marks can contain only digits and has to be greater than zero.
+v)None of the fields can be left blank.
+
+5)Accept 10 numbers from the user and display the smallest and largest of them.
+
+II	Write shell scripts for the following :
+1) Accept a pattern and a file name. Check whether the pattern is existing in the file. If found,display “The pattern <pattern> exists in the file <filename>. If it is not found, display the error message as “The pattern <pattern> is not found in the file <filename>”.
+
+2) To display the following information :
+Your Login Directory is <Login Directory Name>
+Your will get the primary prompt as <Primary Prompt>
+Now the date and time is <date>
+You can execute files in the directories <path>.
+
+3) Accept the name of a file, a subdirectory name (which this shell script has to create) and the directory under which this specified subdirectory has to be created. Create the new subdirectory at the specified place and move the named file from your home directory to this newly created directory.
+
+4) To display a directory listing as follows :
+
+Your Home Directory is <home directory name>
+Filename1 Size Date Time
+Filename2 Size Date Time
+Filename3 Size Date Time
+:
+Total number of files : <total number>
+
+5) Accept a filename as the command line argument. Validate for the number of arguments. If it is not equal to one, display
+Usage : count <filename>
+and terminate execution.
+Check whether the file is existing and it is an ordinary file. If there is an error, display
+a suitable message and terminate execution.
+If there are no errors, display the output as :
+The statistics of the file <filename> are as follows :
+<no. of lines> number of lines.
+<no. of words> number of words.
+<no. of characters> number of characters.
+
+	
+
+SESSION-6
+
+IWrite shell scripts for the following
+
+1)Accept a string. Display its length and also display the string in the reverse order.                               (Ex. india as aidni )
+2)Accept a string from the user and check whether it is a palindrome or not and display appropriate message. (Palindrome is a word that reads the same from left as well as from right.   Ex. noon )
+3)Accept a number from the user and display its factorial
+4)Generate a fibonacci series 0,1,1,2,3,5,8,15,…………, accept the number of elements from the user.
+5)Accept a filename as a command line parameter .Check if it  has read and write permissions for group. If the permissions exist display a message that permissions exist otherwise set the permissions for the given file.If no arguments are passed  the script has to display appropriate error message or an usage help.
+
+IIWrite shell scripts for accepting the following information and storing it in a file.
+Cassette No.
+Movie Name
+Language
+Price
+Date of release.
+The user should be given the facility to enter as many records as he wants.
+
+2. Write a shell to accept the details for READWELL LIBRARY. The details to be stored are :
+Book No
+Name of the book
+Author
+Publishers Name
+Price
+Year of release
+Subject Code
+Validations
+Book No. should not be existing in the file.
+Name of the book, author and the publishers name entered cannot be blank.
+Year of release should be less than 1996.
+Price entered cannot be zero.
+Subject Code can only be either UNIX or C.
+The user should be able to repeatedly enter the data until it is valid. He should also be able to
+enter multiple records.
+
+3.	Write a shell script which will do the following: The first parameter has to be a directory name. It should be followed by filenames. There can be more than 10 filenames. These specified files
+should be copied to the directory name passed as the first parameter. The script should also
+check whether the directory is already existing. If not it has to be created. The program should
+also check for the existence of individual files whether they are existing and are readable.
+
+4. 	Write a shell procedure to delete the specified record from the library file. It should accept a book number, check whether it is existing. If so, display the current details, ask for confirmation and then delete it from the file.
+
+5.	Write a shell procedure to update the price field in the library file. The script should accept a valid book number. The script should add 100 to the existing price of the book and update the file.
+
+SESSION-7
+
+1.The file EMPLOYEE contains the employee code, employee name, designation and salary of the employees
+0001-satya-clerk-3000 
+0002-nisha-manager-10000
+0003-suman-executive-6000 
+0004-vidya-g.m-12000
+0005-sandhya-exec-10000
+0006-pawan-m.d-12000
+0007-ashwin-exec-4000 
+0008-madhu-director-2000 
+0009-madhoo-manager-7000 
+0010-sangli-executive-13000
+
+2.Write an awk script to print all the employee names and their salary.
+3.Print all the records in a formatted manner as below.
+0001	satya		clerk		3000 
+0002	nisha		manager	10000
+4.Print all the records where the salary is greater than 6000.
+5.Print all the records where salary is greater than 6000 and designation is director.
+6.Print all the records that contain madhu or madhoo in them.
+7.Print the longest record in the file.
+8.Print the records with record/line numbers.
+9.To the above script add a  heading  EMPLOYEE DETAILS and the total number of employees in the end.
+10.Make changes to the above script such that all the details are centered across the output screen
+11.Accept a word and display its length. Write a shell script for the above.
+12. Write a shell script for accepting a word from the user and display the reverse of the word.
+      Example : If the user enters “TULEC GK2”, display it as “2KG CELUT”.
+13. Write a script for the following :
+      Accept a .c filename and an executable file name as command line arguments. Activate the vi
+      editor to create/edit the specified .c file. Once when the user comes out of vi, the script should
+      compile the .c file to give an executable file of the specified name. Command to compile a .c     
+      file is
+      cc -o <executable file> <.c filename>
+     All errors should be redirected to a file named errlist.
+     If there are errors, display the error listing one page at a time after displaying the message “The
+     following are the errors encountered in the file <.c filename>”. Then open vi to edit the .c file.
+     If there are no errors, run the executable file after giving executable permission for it. Once     
+     When the user finishes running the file, ask a question “Do you want to continue (Y/N) ?” and  
+     accept an answer from the user. Depends on the user’s wish, either continue execution or  
+     terminate it.
+
+14. Accept a filename. Assign a read and write permission to others for that file, only if it is not
+      having these permissions at present. The above mentioned tasks should be achieved with the
+   help of a shell script.
+
+15. Write shell scripts for the following :
+
+(a)Locate the files under your home directory that have not been modified for the last one week.Copy all those files to a subdirectory called “Oldies”. If the subdirectory is not existing, create it. Before copying individual files, ask the user “Do you want to copy <filename> to Oldies or delete it (C/D) ?”. If the user enters “C” (Capital or small letter), copy the file. If the user enters “D” or “d”, delete the file.
+
+(b)The script should display the name of individual files in your directory one after the other in
+ the following format :
+
+<filename> Copy/Move/Delete/Link (C/M/D/L) ?.
+
+The user should be able to enter either C, M or D as per his/her wish. Depends on the option
+entered by the user, the action has to be taken.
+
+In the case of C, M and L, ask for a destination directory. Once when the directory name is
+accepted, check whether the directory is already existing. If it is not existing, ask the user
+“<directory name> not found - Want to create (Y/N) ?”. If the user enters “Y” or “y”, prompt for
+the name of the parent directory under which the new directory has to be created. Continue
+accepting the name of the parent directory until the user enters a valid directory name that
+is existing. Then create the directory and proceed with Copy, Move or Link. If the option
+entered by the use is for deletion i.e. (D), delete the file after getting a confirmation from the
+user.
+
+(c) Create a student file which contains the following data :
+
+batch code : student code : average marks : status
+
+Accept Batch Code, Student Code, Marks in exam 1 and Marks in exam 2. Calculate the
+average marks. Find out status as passed or failed depending on whether the student got
+above 50 or not. The shell should continue execution till the user responds by saying “N” to
+the question “More (Y/N)” prompted by your shell script.
+
+Incorporate as much validations as possible.
+
+Once when the program terminates, it should display
+
+This program started running at <starting time>.
+
+And finished its execution at <ending time>.
+
+(d) The script should display the following information :
+
+The free disk space available on the file system is <number>. and the space used by the
+current directory and its sub-directories is <number>.
+
+SESSION-8
+
+Contents of the file PHONE are
+Smith, Terry,		7-7898	
+Bob, Wills,		2-3454
+Steve, Waugh,		3-5978
+Brown, Sparrow,		4-5548
+Brown, Hedge,		7-3456
+Louis, Chris,		4-6233
+
+IWrite sed commands for the following
+
+1)Display the lines 2,4 and 6 from the file.
+2)Display the lines having “Brown” in them.
+3)Print only the even numbered lines from the file.
+4)Print only the odd numbered lines from the file.
+5)Substitute terry with berry.
+6)Substitute brown with benson in the line containing hedge.
+7)Display the firstnames with the text FIRSTNAME before them.
+8)Delete all the blank lines in the file.
+9)Interchange the phone numbers such that code follows the number ( ex. 6233-4 )
+10)Store the lines having  7 in them in a file SEVEN.
+
+
+The following input file employee.dat contains the names, designation, basic, HRA and allowances for
+the employees of same organisation.
+Ramesh SSA 2000 1000 1000
+Krishna PSA 3000 1500 1500
+Ramaswamy SSA 2200 1100 1000
+Choudhary SA 1500 750 750
+Renuka SSA 1200 700 1200
+Revathi SSA 1500 800 800
+Radha PSA 2800 1500 1500
+Kadambari SA 1500 750 750
+
+1.Write awk script that will print the employee name along with the total salary.
+2.Print all the records in reverse order of their fields (i.e. fifth field followed by the fourth, then   
+the third, then the second and finally the first.)
+3.Print each record twice. First with fields in reverse order (of fields) and subsequently in the
+original order.
+4.Print the output in the following manner.
+Ramesh SSA 2000
+5.The fields of the file/etc./passwd are listed below :
+File : /etc/passwd
+Fields : login name:password:user id:group id:user name:home directory:login shell
+
+
+5.1 Print out all login names where login name with user id less than 100.
+5.2 Print all those login names which begin with an UPPER case alphabet.
+
+A file batsman contains the following records.
+Bradman:Australia:6996
+Gavaskar:India:124:10122
+Sobers:West Indies:93:8032
+Border:Australia:109:8075
+Miandad:Pakistan:97:7121
+Gower:England:94:7023
+Boycott:England:108:8114
+
+6.Give the awk statement for printing the shortest record of the file ‘batsman’
+7.Give the statement to print just the first three characters of the name and country fields.
+8.Print only the last digit of the last field.
+9.Write an awk script to print the longest name.
+10.Print the first five records of the file.
+11.11.Display the details of the file ‘batsman’ after sorting it in the numerical order of the fourth field.
+12.By making use of the batsman file, write an awk script which will store the records related to the country “Australia” in a file “Aus” and that of England in “Eng”.
+13.Print each line from the file batsman with record number.
+
+SESSION-9
+
+Additional session on Shell scripts
+
+1) Check the exit status of the following commands:
+   ps, ls, who, tty, ls /etc/passwd, ls /etc/passwd_nonexistant,  wc /etc/passwd, wc /etc/passwd_nonexistant
+
+2) Use the vi editor to create a file MyLines with the following contents: 
+
+   Line1
+   line1
+   line2
+   word2
+   line3
+   Line3
+
+Check the exit status of the vi command used to create the file MyLines. Check the exit status of the following commands:
+   a) grep line2 MyLines
+   b) grep Line2 MyLines
+   c) grep -i Line2
+   d) egrep 'word2|line5' MyLines
+
+3) Refer to the man page of diff command. Copy the file MyLines to another file Lines. Check the exit status of the command 
+   diff MyLines Lines 
+   
+   Run the following script:
+
+   if diff MyLines Lines
+   then 
+      echo Same contents
+   else
+      echo Contents differ
+   fi
+  
+Modify the contents of the file Lines. Check the exit status of the above diff command and run the above script again. 
+
+4) Develop a script that will check if the word 'Line3' exits in the file MyLines. The script should output "Line exists in MyLines" if Line3 exists and "Doesn't exist" if it doesn't exist.  The output should consist of exactly one line as expected.
+
+5) Check the exit status of the following commands:
+One argument invocations:
+a) [   "Hello"   ]
+b) [  Hello  ]
+c) [ ""  ]                   
+d) [ ]
+
+Remove the write permission for the file MyLines created in problem 3. 
+Two argument invocations:
+e)  [ -r   MyLines ]
+f)   [ -w   MyLines ]
+g)  [ -r   ~ ]
+h)  [ -w   /usr/bin ] 
+i)   [ -r    NoFile ] ( Make sure a file by name NoFile doesn't exist before running this command.)
+j)   [ -rNoFile ]  ( No space between -r and filename. 
+                             Compare this with one argument invocation in b. )
+k)  [ -r  MyLines] ( No space between filename and ]. ) 
+l)   [ ! "Hello" ]
+m) [ ! "" ] 
+
+6) Develop a shell script that:
+a) Checks if the first command line argument is a file with read permission.
+b) Checks if second command line argument is a directory with write permission. 
+c) Copies the given file to the directory given in second argument.  
+
+7) Develop a script that:
+
+a) Checks if the first command line argument is a non-zero size file. If the file size is zero, the script should terminate after displaying an error message on standard error. Make sure the exit status of the script indicates an error. Check if any of rwx permissions are required for testing non-zero size of a file with the -s operator of test command. Why do you think it is so? 
+
+b) Checks if the second argument is non zero length string. If it is zero length, the script should terminate after displaying an error message on standard error and with appropriate exit status. 
+
+c) Copies the file given by first command line argument to a file with name given in second command line argument. 
+
+8) Develop a shell script that checks the size of a file given in first command line argument, displays "Greater than 10 KB" or "Equal to 10KB"  or "Less than 10KB" depending on the size of the file. 
+
+9) Develop a shell script that displays each of the command line arguments on a separate line using the for compound command. 
+
+10) Check the exit status of the following commands:
+    String comparison operations, three arguments:
+ 
+a) X=Hello 
+       [ "$X" = "Hello" ]
+b) X=World 
+        [ "$X" = "Hello" ]
+c) [ "abc" > "bcd" ] 
+Check if a file by name bcd exists after running the above command. What do you infer? Is the exit status as expected?
+d) [ "ABC" \> "BCD" ]
+Check if file BCD exists. Which is the correct invocation c or d? 
+
+11) Develop a shell script that performs string comparison on the first and second command line arguments and displays the greater of the two. 
+
+12) Develop a shell script that performs string comparison on your user id and the word 'root' and displays the lesser of the two.  
+
+13) Develop a shell script that prints the largest (string wise) of the command line arguments. 
+
+14) Check the exit status of the following commands after setting the vars X=20 and Y=30.
+    Numerical relational operations, three arguments:
+a) [ 34 -gt 200 ]
+b) [ 34 \> 200 ] ( compare with the exit status of a.  )
+c) [ X -le 25 ]
+d) [ $X -le 25 ]
+e) [ $X+$Y -gt 25 ] ( compare with command in f.)
+f) Z=`expr $X + $Y`  (Note the use of spaces.)
+    [ $Z -gt 25 ] 
+g) Remove the spaces on either side of + in the above assignment and check the value of Z.    
+h) [ `expr $X + $Y` -gt 34 ]
+i)  [ `expr $X + $Y` -le 49 ] 
+j)  [ `expr 2 * 4` -eq 8 ] ( what is the problem with this command?)
+k) [ `expr 2 \* 4` -eq 8 ] 
+l)  [ 3.5 -gt 2 ]    ( Are floats supported in bash?)
+m) [ `expr 2.5 + 3` -gt 5 ]
+   
+15) Develop a shell script that expects exactly one command line argument, verifies the argument is a +ve integer and then displays the factorial of the integer. Make use of the expr command for arithmetic. 
+
+16) Develop a shell script that interactively reads an integer and checks if the integer is a prime number. Make use of the expr command for arithmetic. 
+
+17) Solve problems 16 and 17 using Arithmetic expansion feature of the shell, integer attribute of shell variables and the ((  ))  command appropriately. 
+
+18) Develop a shell function that accepts exactly two integers in command line arguments, performs the exponentiation and displays the result.  Ex: MyExpFunc 3 4 should output 81. 
+
+19) Develop a recursive shell function to calculate the gcd of two integers give in the command line arguments.
+
+    Algorithm gcd (i, j):
+    If j equals 0
+    Then gcd=i
+    Else Calculate gcd  (j, i%j) 
+
+
+
+
+
+

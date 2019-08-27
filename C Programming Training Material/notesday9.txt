@@ -1,0 +1,406 @@
+int A, B=20;
+int f(void) 
+{
+
+static int p=10;
+//int p=10; 
+printf("%d\n",p); 
+
+p = 20;
+
+printf("%d\n",p); 
+
+}
+
+int main(int argc, char * argv[])
+ {
+  f();
+/*.................*/ 
+  f();
+ return 0;
+ } 
+
+
+
+
+
+Storage classes:
+----------------
+ Storage specifies the life time of an object. 
+ It actually specifies where the storage is 
+ allocated(implicitly)
+ When it is allocated and 
+ When the storage is freed up.
+
+ 1)Automatic storage class
+   Loosely, Meant for local variable of a functions.  
+   Storage allocated automatically and also freed up automatically.
+ 
+   i , j and k have automatic storage class: 
+   auto keyword, reduntant for block scope symbols
+
+   f() 
+   { int i=10;
+     if ( i > 10) 
+        { 
+         int j = 20; 
+         printf("%d", j);
+        } 
+        else
+        { 
+         int k = 30; 
+         printf("%d", k);
+        } 
+  } 
+
+ 2) Static storage class
+ Storage allocated once before main() starts execution. 
+ Can not be freed anyway
+
+ Loosely:
+ All global variables have static storage class by default.
+ A local variable that has automatic starage can be promoted to have 
+ static storage by using the keyword static in the declaration. 
+ Such a promoted variable will have initialization done once at the time of space allocation(before main starts).
+
+3) Register storage class:
+   
+ register int a;
+ 
+ A request for faster memory to be allocated!!
+ A register is allocated by compiler if possible. 
+
+ & op is only for main memoryo  
+ Error to use & with register storage class variables. 
+
+   scanf("%d", &a);   ????? 
+
+
+  ANSI only int data types for register.
+ 
+  ISO c99 -- Any object can be declared with register keyword. 
+  including arrays and structures.....
+
+   for ( int i = 0; i<100000; i++)
+   {   
+    /* i used 10 times per iteration */
+   } 
+    
+   An optimizing compiler may allocate register for i with 
+   out an explicit register keyword in declaration. 
+
+Only local variables
+
+Section 6.9 External definitions, constraint 2 in 
+C std says register keyword can't be used for 
+external declarations 
+
+
+4) extern 
+   specifies external linkage. 
+-----------------------------------------------------------------------
+
+ Scopes:
+-------
+
+
+1) Prototype scope
+   From the point of declaration till the end of prototype
+   int f(int x, int y, char x ); 
+   int g(float x, int y); 
+
+   int f(int a, int b, char c )
+   { 
+
+   } 
+    // OK  
+2) Block scope : 
+   From the point o fdeclaration till end of the block. 
+    
+   f() 
+   { int i=10;
+     got MYLABEL; 
+
+     if ( i > 10) 
+        { 
+         int j = 20,p=j;                        |
+         printf("%d", k);  // ERROR             |
+         static int x;                          |
+         MYLABEL:                               |
+         int k=j+30;        |                   |scope of j
+         printf("%d", j);   |   Scope of k      |
+         printf("%d", i);   |                   |
+        }                   V                   V
+        else
+        { 
+         int k = 30; 
+         printf("%d", k);
+        } 
+  } 
+
+3) Function scope: 
+   Only goto labels have function scope in C
+
+4) File scope: 
+
+   Any symbol declared out side a block will have file scope 
+   From the point of declaration till end of the file    
+
+    cc file1.c file2.c file3.c 
+        --------> a.out 
+
+     file1.c                 file2.c                  file3.c
+------------------------------------------------------------------
+int X;        |  |  extern int X   ;          | int Y;
+              |  |                            | 
+              |  |                            |  extern int i;// ERROR  
+              |  |                            |             
+ f1()         |  |   main()                   |      f2()
+ {            |  |   { X                      |    {
+    int i=10; |  |    f1();                   |     
+  }           |  |    f2();                   |extern int X ;|scope of
+              |  |    }                       |              |  X
+ Scope of X   V  |                            |     }        V
+ Static storage  |                            |   f3()
+ class of X      |                            |   {
+                 |                            |
+                 |                            |    } 
+                 |                            |
+--------------------------------------------------------------------------
+
+File scope initilization SHOULD be with const expressions:
+----------------------------------------------------------
+Expressions involving items with values known at compilation time.
+
+Values of variables not allowed.
+
+Allowed:
+	constants
+	sizeof of file scope symbols
+	addresses of file scope symbols
+        
+----------------------------------------------------------
+Linkage:
+-------
+Ability to access a symbol defined in a different scope.
+Linkage is defined only for objects & functions
+
+
+  1) External linkage
+	Symbol can be accessed from a different file
+  2) Internal linkage
+	Symbol can be accessed from within the file in 
+        which the definition occurrs. 
+  3) No linkage ( none)
+	block scope can not be linked to from other scopes
+	Structure tags( definitions) do not have any linkage
+	typedefs do not have linkage
+
+
+
+     file1.c                 file2.c                  file3.c
+------------------------------------------------------------------
+static int X=10; |         int X   ;          | int Y;
+              |  |                            | 
+              |  |                            |  extern int i;// ERROR  
+              |  |                            |   extern int X;          
+ f1()         |  |   main()                   |      f2()
+ {            |  |   { X                      |    {
+    int i=10; |  |    f1();                   |    extern int X=10;//ERROR 
+  }           |  |    f2();                   |      X =20  | scope of 
+              |  |    }                       |         X;      |  X
+ Scope of X   V  |                            |     }           V
+ Static storage  |                            |   f3()
+ class of X      |                            |   {
+                 |                            |
+                 |                            |    } 
+                 |                            |
+--------------------------------------------------------------------------
+
+
+
+
+
+
+   static  int X;   // internal 
+
+
+           int X;  //external   ERROR 
+
+
+------------------------------------------------------------------------
+"extern"     WORD's  definition:
+  if a previous declaration of the same symbol exits, 
+	continue with the previous linkage. 
+  else 
+        create the symbol with external linkage
+
+  
+----------------------------------------------------
+ static int X;   //internal 
+
+ extern int X; // previous linkage--internal 
+
+ static int X;   //internal 
+----------------------------------------------------
+
+
+----------------------------------------------------
+ extern int X;   //No previous declaration So external 
+
+ static  int X; // internal    ERROR
+----------------------------------------------------
+
+----------------------------------------------------
+ int X;   //external 
+
+ static  int X; // internal    ERROR
+----------------------------------------------------
+
+
+----------------------------------------------------
+ static int X;   //internal 
+
+ extern  int X; // internal from previous declaration 
+----------------------------------------------------
+
+----------------------------------------------------
+ static int X;   //internal 
+
+ int X; // external ERROR 
+----------------------------------------------------
+
+----------------------------------------------------
+  int X;   //external 
+
+ extern int X; // external
+----------------------------------------------------
+
+Qualifiers:
+------------
+
+ 1) const:
+    If in a declaration of a symbol const qualifier is used, 
+    the underlying object can not be modified using 
+    the symbol in the declaration. 
+
+    i=..... ERROR 
+    i++     ERROR 
+    i--     ERROR 
+    i+=..   ERROR 
+ 2) Volatile:
+    No optimization will be performed for the access 
+    if declared with volatile qualifier.   
+    for(int p=0; p< 10000000; p++ )
+    { 
+       int i = 10; 
+     .   
+     .   
+     .   /* Gauranteed that i is not modified * /    
+     .   
+     .   
+       j = i + 20 ; 
+         // An optimizing compiler will replace the above line as 
+       j = 30; 
+    }  
+
+    for(int p=0; p< 10000000; p++ )
+    { 
+       volatile   int i = 10; 
+     .   
+     .   
+     .   /* Gauranteed that i is not modified * /    
+     .   
+     .   
+       j = i + 20 ; 
+         // NO OPTIMIZATION ON ACCESS TO i WILL BE PERFORMED  
+    }  
+
+    for(int p=0; p< 10000000; p++ )
+    { 
+       volatile   int * vip= NULL; 
+     .   
+     .    vip =...............    ;   // some memmap...
+     .   
+     .   /* Gauranteed that i is not modified * /    
+     .   
+     .   
+       j = *vip + 20 ; 
+         // NO OPTIMIZATION ON ACCESS TO LOCATION POINTED AT
+         // AT BY vip WILL BE PERFORMED  
+    }  
+---------------------------------------------------------------------------
+
+   f() 
+   { int i=11;
+     goto MYLABEL;
+     if ( i > 10) 
+        { 
+         int j = 20; 
+         MYLABEL1: 
+         printf("%d", j); 
+            
+         int k=40;
+         MYLABEL:                  |
+         printf("%d", k);
+         goto MYLABEL1; 
+         printf("%d", j);
+         printf("%d", i);
+        } 
+        else
+        { 
+         int k = 30;               |
+         printf("%d", k);          |
+                                   V
+        } 
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+

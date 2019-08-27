@@ -1,0 +1,141 @@
+at and batch commands:
+--------------------
+
+Allow jobs to be executed at a specified time. 
+
+at TIME -f commands_filename
+batch TIME -f commands_filename
+
+The commands specifed in the file with -f commands_filename 
+will be executed. If -f is not preset, the commands are read 
+from standard input. The stdout and stderr contents generated 
+by the commands are mailed to the user.
+
+By default, only super user can submit jobs for execution. 
+If /etc/at.allow file exists, user ids LISTED in it are allowed to 
+submit jobs. If /etc/at.allow doesn't exists, then if /etc/at.deny
+file exists, user ids NOT LISTED in /etc/at.deny are allowed. 
+To allow every user to submit a job, create an empty /etc/at.deny file. 
+
+TIME formats:
+
+time date 	     Either time or date can be missing but noth both.
+                     With only date, current time is assumed.
+                     With only time today is assumed. If the current time is
+                     greater than what is specified, tomorrow is assumed. 
+
+time formats:
+HH:MM                24 Hr time
+hh:mm                with AM or PM suffix
+hh am/pm              
+noon
+midnight
+teatime              4pm
+now
+
+date formats:
+month-name day
+month-name day year
+MMDDYY
+MM/DD/YY
+DD.MM.YY
+
+Examples:   10:35 oct 17
+            3:40PM JanUARY 16
+            20:45 Feb 24 2007
+            102006                MMDDYY
+            9am
+            Nov 25              At the current time on Nov 25 this year.
+                                Silently ignores past dates.
+Refer to man page for more formats of time and date.
+
+
+atq:
+---
+       at and batch requests are queued on system queues.  A queue designation consists of a single letter; valid queue designations range from a to z.  and A  to Z.  The a queue is the default for at and the b queue for batch.  Queues with higher letters run with increased niceness.  The  special queue "=" is reserved for jobs which are currently running.
+
+
+[srini@srini srini]$ at 3:40PM JanUARY 16 2007
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+at> echo first job
+at> <EOT>
+job 20 at 2007-01-16 15:40
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+[srini@srini srini]$ atq
+
+Job ID   date and time        Queue      user
+------   -------------        -----      ----
+20       2007-01-16 15:40     a          srini
+
+
+[srini@srini srini]$ at 3:40PM JanUARY 16 2007
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+at> echo first job
+at> <EOT>
+job 20 at 2007-01-16 15:40
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+[srini@srini srini]$ at 10:35 oct 17
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+at> ls -ld
+at> <EOT>
+job 21 at 2006-10-17 10:35
+You have new mail in /var/spool/mail/srini
+[srini@srini srini]$ cat atc
+ls
+[srini@srini srini]$ at 9am -f atc
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+job 22 at 2006-10-18 09:00
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+22      2006-10-18 09:00 a srini
+[srini@srini srini]$ at Nov 25 -f atc -q D
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+job 23 at 2006-11-25 20:18
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+22      2006-10-18 09:00 a srini
+23      2006-11-25 20:18 D srini
+[srini@srini srini]$
+[srini@srini at_cron]$ batch 12am
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+at> echo a batch job
+at> <EOT>
+job 28 at 2006-10-18 00:00
+[srini@srini at_cron]$ atq
+20      2007-01-16 15:40 a srini
+28      2006-10-18 00:00 b srini
+23      2006-11-25 20:18 D srini
+[srini@srini at_cron]$ at now
+warning: commands will be executed using (in order) a) $SHELL b) login shell c)
+/bin/sh
+at> sleep 400
+at> <EOT>
+job 29 at 2006-10-17 20:29
+[srini@srini at_cron]$ atq
+20      2007-01-16 15:40 a srini
+28      2006-10-18 00:00 b srini
+23      2006-11-25 20:18 D srini
+29      2006-10-17 20:29 = srini
+[srini@srini at_cron]$
+
+atrm:
+----
+A job on a queue can be deleted using atrm.
+
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+22      2006-10-18 09:00 a srini
+23      2006-11-25 20:18 D srini
+[srini@srini srini]$ atrm 22
+[srini@srini srini]$ atq
+20      2007-01-16 15:40 a srini
+23      2006-11-25 20:18 D srini
+[srini@srini srini]$

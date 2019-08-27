@@ -1,0 +1,591 @@
+
+UNIX OS
+Basics
+Operating System
+OS is special software/program
+Loaded at boot time
+Controller of hardware
+Communicates with hardware at very low level  
+Provides a convenient environment 
+User Interface
+Arbitrates usage of hardware by user programs
+
+Types of OSes
+Single Tasking            
+                            Dos
+MultiTasking   
+               UNIX ,Windows 98
+Single User
+                       Windows XP
+Multi User
+                             UNIX
+Command Line Interface, CLI  
+                       UNIX,DOS
+Graphical User Interface 
+                     Windows 98
+History of UNIX
+Started in late 60's
+Developed by Ken Thompson, AT&T 
+Assembly Language
+PDP – 7
+8KB RAM
+C, an offshoot of UNIX 
+
+MULTICS, UNICS and UNIX
+Enhanced at University of California, Berkely – BSD UNIX
+
+Historical UNIXs
+AT & T
+System V Rel III 
+SVR3 
+Sys5
+
+Berkely Software Distribution
+BSD 4.3
+
+
+
+Commercial UNIXs
+AIX       IBM, Sys 5/BSD
+HPUX      Hewlett-Packard     Sys5
+IRIX      Silicon Graphics    Sys5
+OSF1      Digital         BSD/Sys5
+SunOS     Sun Microsystems
+                           BSD/Sys5
+Solaris   Sun Microsystems
+                           Sys5/BSD
+Ultrix    Digital Equipment 
+           Corporation          BSD
+
+
+
+Simple Commands
+$ id         - User id details
+$ who        - Users logged in
+$ who am i   - Current user details
+$ ps         - Details of processes
+$ ls         - List of files
+$ uname      - UNIX Kernal name
+$ date       - System date & time
+$ uptime     - Time since boot
+$ clear      - Display clearing  
+$ passwd     - Changes the password 
+
+
+
+Simple Commands
+$ echo hello world 
+$ echo  -n hello world
+$ ps    -f
+$ ls    -l
+
+
+
+
+Typical command syntax
+cmd sp opt1 sp opt2 sp arg1 sp arg2
+
+Wrong Udage:
+
+$ ps-f
+$ ls-l
+$ uname-r
+$ echo-n hello world
+$ echo -nhello world
+
+
+
+
+System documentation
+Online Manual pages
+man who
+space     Next screen
+b         Previous screen 
+q         Quit
+man ls
+ SYNOPSIS
+ ls [OPTION]... [FILE]... args
+man cp
+ SYNOPSIS
+ cp [OPTION]... SOURCE DEST
+ cp [OPTION]... SOURCE... DIRECTORY
+
+
+Searching commands
+man –k copy
+man –k copy | less
+Lines with ‘(1)’ are commands
+
+
+
+
+OS Components
+Kernel
+	Core Part of the OS
+Shell
+	Provides user interface
+Commands/Utilities
+	Programs for using the system
+
+
+
+OS Components-Kernel
+Functions
+Memory management
+Process management
+User management
+Drivers for I/O devices
+File systems 
+Special program loaded at booting
+Manages entire hardware
+System unusable without kernel
+
+OS Components-shell
+Kernel starts one shell per login
+Command Line Interface
+Displays a prompt
+Reads commands from user
+Runs the commands
+Redisplays the prompt
+Command interpreter program
+I/O redirection
+Pipes 
+Scripting
+
+OS Components-Commands
+Programs for using the system
+who, ps, clear
+cp, mkdir and chmod 
+Present in bin directories
+echo $PATH
+which who
+which cp
+which clear
+which chmod
+Applications provide more commands 
+acroread, firefox and
+open office
+
+
+
+User Interface...
+Command Line Interface by Shell
+Graphical User Interface
+Included on most modern UNIXes
+CDE, KDE and GNOME
+UNIX Power from CLI - not from GUI
+
+User Interface...
+Network or remote Login
+Login over network
+Commands run on UNIX machine
+Files stored on UNIX machine
+Hard disk, cdrom and 
+Memory stick 
+User Interface over the network
+printf
+scanf
+
+Linux - Kernel
+Linus Torvalds 
+Eng. Prj. University of Helsinki
+Initiated kernel in 1991
+Contributed by programmers on world wide web
+Controlled by Linus Torvalds
+
+           www.kernel.org
+
+
+Shells and applications 
+Richard Stallman
+Free Software Foundation
+Source code under GPL, freely
+G N U group works on UNIX
+G N U is Not UNIX
+Contributed by programmers on world wide web
+Should be refered as GNU/Linux
+
+           www.gnu.org
+
+Directory hierarchy 
+/bin/ls     - ls program
+/dev/hda    - First ide hard disk
+/home/ajith – ajith’s home dir
+             - placed here on login
+Directories
+$ mkdir d1 d2 d3
+ 
+$ mkdir d1/subdir
+
+$ mkdir d4/subdir
+
+$ mkdir d4 d4/subdir
+Directories
+$ mkdir d5 d5/subdir/new d5/subdir
+
+$ mkdir –p  d6/subdir/new
+
+Directories
+$ rmdir d2 d5 d3
+Directories should be empty
+
+Directories
+$ cd /tmp
+$ pwd
+$ cd /usr/bin 
+$ pwd
+$ cd
+$ pwd
+$ cd d1/subdir
+$ pwd
+$ cd 
+$ pwd
+
+
+. and ..  
+Every directory has . and .. 
+Entry . refers to the directory 
+                     containing it 
+Entry .. refers to the parent
+
+
+. and ..  
+.                  /home/ajith
+./f1               /home/ajith/f1
+..                 /home
+../john            /home/john
+../../usr          /usr
+
+
+
+
+
+Pathnames
+Absolute Paths
+ Begin with /
+ /home/ajith/f1, /tmp/abc
+
+Relative paths
+ Begin with . Or ..
+ ./d1/f1, ../d2/f2
+ Dependent on working directory
+ d1/f1  same as ./d1/f1
+
+
+
+Creating files
+$ touch f1 f2 f3
+Creates empty files 
+Updates modification time if file exists
+$ echo Some text here > f4
+$ cat f4
+
+
+Cat Command
+$ echo Some more text > f5
+
+$ cat f5 f4
+
+$ cat f5
+Creating files
+$ cat > f6
+Some text for line1
+Some text for line1
+Some text for line2
+Some text for line3
+ctrl-d
+
+
+
+Copying Files
+$ cp f1 f2            
+         Copy f1 contents onto f2
+$ cp -i f1 f2         
+         Prompt before truncating
+$ cp f1 d1            
+                Copy f1 to dir d1
+            What if d1 doesn’t ist?
+$ cp f1 f2 f3 d1      
+                   Copies to dir d1
+
+
+Copying Files
+cp source destination
+If destination doesn’t exist it will be created as regular file
+
+If destination is an existing regular file, it will first be truncated and source copied to it 
+
+If destination is directory a copy of source is made in the directory
+
+
+
+Copying directories
+$ cp d1 d2         
+               What is the result ? 
+$ cp -r d1 d2         
+        Recursively copy directory.
+                    -r or –R ?
+$ cp f1 d1 f2 d2      
+             f1 and f2 copied to d2
+             Error for directory d1
+
+$ cp -r f1 d1 f2 d2   
+          Copies f1 d1 f2 to dir d2 
+
+
+
+Moving
+$ mv f1 f2
+             f1 content moved to f2
+             f1 deleted
+             Renaming f1 to f2
+$ mv -i f1 f2         
+                Prompt if f2 exists
+$ mv f1 f2 f3 d1      
+                    Moves to dir d1
+$ mv f1 d1 f2 d2      
+                   Works without -r
+
+Deleting
+$ rm f1 f2 f3      
+               Deletes f1 f2 f3
+               No undelete command
+$ rm -i f1 f2 f3   
+               Prompt for each file 
+$ rm f1 d1 f2 d2   
+               Error on directories
+$ rm -r f1 d1 f2 d2
+               Recursive deletion
+               
+Example File Names..
+
+8 
+2+4
+A=B?
+p.q.w.e.        
+.abc
+abc
+a*c
+This line, a valid UNIX filename
+
+
+File Names..
+Can be 255 characters long
+File System dependent
+Chars not allowed are NULL and ‘/’
+Doesn't require exensions
+Dot is just another character
+File names beginning with ‘.’ are hidden file names
+
+
+Shell Wild cards
+Create these in your home
+$ touch abc axc azc a+c a-c a[c
+$ touch axyzc
+
+Shell Wild cards
+$ echo a* 
+$ echo *
+
+$ echo a?c  
+$ echo a???c
+
+$ echo a[xyz]c
+$ echo a[!xyz]c
+$ echo a[a-z]c
+$ echo a[-a-z]c
+
+
+Shell Wild cards
+*      Matchs zero or more chars
+?      Matchs any one char
+[]     Matchs one of the chars
+[!]    Matchs not included chars
+
+Kernel file types
+Regular files
+	Text files
+	Html files
+	C source files
+	Executable files
+Directory files
+Device files
+Soft link files
+
+Directory files 
+ 
+Listing
+ls f1 NoFile F2
+              Error on non existing
+              files
+
+ls           Default argument is .
+
+ls d1        List directory
+
+Listing
+ls -a        All files, including 
+              hidden ones
+
+ls -i        Display inode numbers
+
+ls –F        / directories
+              * execute perm
+              @ symbolic links
+
+ls -Q        Quote file names
+
+File Types
+$ ls -l /dev | less
+
+d directory, 
+- regular file, 
+b block special devices
+c character special devices
+l soft link
+
+
+File Permissions
+         Group
+Owner              Others 
+      rwx --x r--
+      111 001 100
+        7   1   4
+cat f1
+	Requires read on f1
+cp f1 f2
+	Requires read on f1
+	Write on f2, if f2 exists
+	Write on the current dir if d2 doesn’t exist
+
+
+Directory Permissions
+Read         
+listing of directory contents
+$ ls d1 
+
+Write        
+file creation/deletion/moving
+$ touch d1/newfile
+$ cp f1 d1/copyf1	
+$ rm d1/newfile
+
+
+Directory Permissions
+Execute    
+Search        
+To use directory in pathname
+cat /home/ajith/d1/f1 requires 
+
+    Search on   /, 
+                /home, 
+                /home/ajith 
+                /home/ajith/d1
+
+    Read   on   /home/ajith/d1/f1
+
+
+Listing Directories
+touch f1 f2 d1/abc  d1/xyz
+mkdir d1/subdir
+touch d1/subdir/abc d1/subdir/pqr
+
+ls f1 d1 
+             Lists f1 
+             Lists contents of d1 
+ls -d f1 d1 
+         List directory names and
+         not contents. Effective
+         only for directories  
+
+Listing Directories
+
+ls   -l   f1 d1
+             Long listing for files 
+             and directory contents 
+ls   -ld  f1 d1
+             Long listing for files 
+             and directory names
+Listing Directories
+ls d1
+       Doesn’t list subdir contents
+
+ls –R d1
+       Recursively list d1
+
+ls –lR d1
+       Long listing Recursively
+
+
+Listing Directories
+List the permissions of the files in the /tmp directory
+List the permissions of the directory /tmp itself
+
+
+Change Permissions
+chmod u+rw    file1   
+chmod u+x,g-x file1
+chmod a+rwx   file2
+chmod a+x     dir
+chmod -R a+x  dir
+chmod 714     file1
+chmod -R 644  dir
+
+
+chown ajith file1
+chgrp prj1  dir2
+
+Default Permissions
+umask
+umask 027 
+Regular files
+ rw- rw- rw-  Attempted by commands 
+ 110 110 110 
+ 000 010 111 = 027 = umask
+ 110 100 000  File permissions
+
+Directories 
+ rwx rwx rwx  Attempted by commands
+ 111 111 111 
+ 000 010 111 = 027 = umask
+ 111 101 000  Directory permissions
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solve...
+Copy the passwd file of etc directory to current directory d2
+
+
+Create a directory with as your login id in the tmp directory
+
+
+Copy the passwd file of etc to your directory in tmp 
+Solve...
+Copy the passwd file of etc directory to current directory d2
+  $  cp   /etc/passwd .
+
+Create a directory with as your login id in the tmp directory
+  $  mkdir   /tmp/YOURID
+
+Copy the passwd file of etc to your directory in tmp 
+  $  cp   /etc/passwd /tmp/YOURID
+
+What will be the result of
+following when executed from 
+your home
+
+$ echo a[a-z]c
+
+$ cp  a[a-z]c  /tmp/YOURID
+
+

@@ -1,0 +1,47 @@
+    1) 
+   bash script.sh
+   Child shell is invoked
+
+   2) 
+   chmod u+x scirpt.sh 
+   ./script.sh 
+   Child shell is invoked
+
+    3) 
+    source   script.sh 
+      .      script.sh
+    Current shell sources the commands from the script.
+
+     4) 
+      .      ./abc.sh 
+     Current shell sources from the file ./abc.sh
+
+     5) .    ./.profile
+
+     Current shell sources the commands 
+     from the hidden file .profile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

@@ -1,0 +1,19 @@
+
+ parent 
+                |--------------------|
+                |--------------------|
+child 
+int fd [ 2];
+
+pipe(fd);
+
+write(fd[1], buff1, 100);
+write(fd[1], buff1, 50);
+write(fd[1], buff1, 70);
+
+
+read(fd[0], buff2, 40);
+read(fd[0], buff2, 150);
+read(fd[0], buff2, 50);
+read(fd[0], buff2, 20);
+

@@ -1,0 +1,53 @@
+I/O redirection
+---------------
+
+1) Observe the data saved to the respective files with stdout redirection:
+   echo hello > f1-1
+   echo world > f1-2
+   echo f1-1 > out  f1-2
+   cat  f1-1 > out f1-2
+  
+   What is the difference between the last two commands?
+  
+   What will be result of the following commands?
+   > out
+   > f1-4
+  
+2) echo hello > f2-1
+   echo world > f2-2
+   echo UNIX  > f2-3
+   echo HELLO > f2-1 WORLD > f2-2 UNIX > f2-3
+
+   Explain on the file contents as a result of stdout redirections
+
+3) touch hello unix
+   ls -l hello world unix > hello 2>err
+   ls -l hello
+   cat hello
+ 
+   Explain on the difference of file sizes of hello.
+
+   Change the first ls command to capture both errors and stdout to the file hello.
+
+4) echo hello > f4-1
+   echo world >> f4-1  how are you > f4-1
+
+   Will the line with the word "hello" be retained in the file f4-1? Explain?
+   Will changing the order of > and >> operators result in any difference?
+
+5) Insert the following two lines to both the files f5-1 and f5-2:
+
+   world
+   hello
+
+   what will happen with "cat f5-1 > f5-1"   and "cat f5-2>> f5-2" ?
+
+   What would be the result with sort command instead of cat?
+
+6) Create two files f6-1 and f6-2 with differing contents.
+   What will be the result of ?
+
+   sort   < f6-1     f6-2
+   sort     f6-1   < f6-2
+   sort   < f6-1   > hello  < f6-2  > out
+   sort   < f6-1   > hello    f6-2  > out

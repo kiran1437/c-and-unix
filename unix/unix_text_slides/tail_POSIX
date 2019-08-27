@@ -1,0 +1,6 @@
+export POSIXLY_CORRECT
+export _POSIX2_VERSION=199209
+
+OR
+
+tail -n +3 

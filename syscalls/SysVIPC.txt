@@ -1,0 +1,611 @@
+Inter Process Communication
+---------------------------
+
+
+IPC refers to the mechanisms used for communication between processes running on a single computer.  Examples of ipc objects include pipes, FIFOs, posix message queues, System V message queue and so on.  Typically, an ipc object is first created by one process. Once this object is created, it is available for communication amoung mutiple process including the process that created the ipc object. 
+
+Since, UNIX allows mutiple ipc objects to be used by mutiple processes concurrently, a way of identifying an ipc object is required.  
+
+Similar to files being identified by filenames, System V IPC object are identified by keys whose type is given as key_t.  
+
+key_t key;
+
+Typically, key_t defined in sys/types.h is an integral type with atleast 32 bits. All processes accessing a single IPC object should use the object key. 
+
+Given that kernel uses integral type key to identify SYS V IPC object, if processes randomly use any integer valued keys to identify ipc objects, there is a fair chance of collisions on key values. Two unrelated process can accidentaly use same key value to access different ipc objects.  So the key value is usually generated using the library function ftok(). 
+
+key_t ftok(const char *pathname, int proj_id);
+
+ftok() generates a key out of the two arguments given with pathname and proj_id.
+
+Multiple processes wanting to access a single ipc object should call ftok() with the same filename and proj_id to generate the key.
+
+
+Persistency of Sys V IPC objects
+--------------------------------
+
+Persistance refers to the time span during which an IPC object exists. There three types of persistencies. 
+
+Process persistancy. The IPC object exists as long as atleast one process holds the object for use. Example is a pipe. A pipe object is automatically destroyed when the last process that has it open for reading terminates. 
+
+Kernel persistancy. Once created, IPC object exists until either the kernel is rebooted or the object is explicitly destroyed by a program. Multiple processes can use such an object during its lifespan. System V IPC objects have kernel persistancy.
+
+File system persistancy. Once created, IPC objects exist across kernel reboots, until the object is explicitly destroyed by a program.  Ordinary files stored on a hard disk have filesystem persistancy.  Ordinay files also can be viewed as IPC objects as one process can save some data to a file and another process can read the contents of the file. 
+
+System V IPC
+------------
+
+System V IPC consists of three types of objects. Message queues, shared memory and semaphores.
+
+A message queue consists of a queue maintained by the kernel. When a process needs to comminucate with another process, it sends a message over the queue. Another process which requires to receive the information retreives the message from the queue. 
+
+A shared memory object is maintained by the kernel. Such an object can be mapped as part of the address space of mutiple processes. As a result, when a process needs to commincate with another process it just copies the information to the address in memory where the shared 
+memory object is mapped into. Another process which requires to receive the information just reads memmory locations where the shared memory object is mapped. 
+
+Semaphores are IPC objects, which are used to synchronise access to resources shared by multiple processes. For ex. when a process is printing a file on the printer, another process should not be allowed to print on on it. Semaphores can be used for synchronising access to shared resources such as printers, modems and shared memory objects. 
+
+Message Queues:
+---------------
+
+In order to access a message queue either for sending or recieving messages, the handle for the queue should be used. The system call msgget() should be used for getting the handle. 
+
+int msgget(key_t key, int msgflg);
+key:     The key of the message queue.
+msgflag: Can be zero. 
+         IPC_CREAT creates the queue if it does not exist alreay.  
+         IPC_EXCL can be used along with IPC_CREAT. With IPC_EXCL msgget() will fail if queue with given key already exists.  
+
+         If IPC_CREAT is used then the access permission values should also be included. Ex:S_IWUSR|S_IRGRP indicates, owner of the queue  can send messages and group members can recieve messages. These permission values are the same ones used with open() for creating files. Execute permissions are not used.  
+
+The following code gets the handle of an existing queue with the given key.
+
+int msgid = msgget (k,0);
+printf ("Mesg identifier is %x\n", msgid);
+if (msgid == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+The handle msgid should be used for sending/receiving messages over the message queue. The second argument can be zero when getting an already existing queue. If a new queue is required to be created using the given key, then IPC_CREAT along with access permission values should be included. 
+
+msgid = msgget(k, IPC_CREAT | S_IRWXU) 
+
+creates a queue with the given key and the handle is assigned to msgid.  If the queue already exists it handle is returned by msgget(). The permissions S_IRWXU indicate owner of the queue is allowed to send/ receive messages over the queue. 
+
+Invoking msgget() with IPC_CREAT and IPC_EXCL in the second argument, results in behaviour similar to open() system call with O_CREAT and O_EXCL flags argument.
+
+Sending messages:
+-----------------
+Messages to be sent over a queue have two important parts.  The type of the message and the contents of the message.
+
+When a process needs to send a message, a generic structure of the form 
+struct msgbuf {
+                 long mtype;     /* message type, must be > 0 */
+                 char mtext[1];  /* message data */
+            };
+
+should be defined first. The field mtype gives the type of the message.  This field is mandatory and should be the first field in the structure.  The mtext field is the contents of the message that has a size of 
+one byte.  
+
+In practice, message contents could be larger than one byte. The generic structure msgbuf could be modified to :
+
+struct mystruct{
+int x;
+char c;
+char array[20];
+};
+
+struct msgbuf{
+long mtype;
+struct mystruct myvar;
+};
+
+In this definition myvar has the message contents of length sizeof(strcut mystruct);
+
+A message queue may contain multiple messages with differing message types and differing message content sizes as below:
+
+
+
+
+
+
+
+
+Type		Content size
+18              100
+10		200
+20		50
+10		140
+35		0
+10		400
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The system call msgsnd() should be used to send messages over a queue. 
+
+int  msgsnd(int  msqid, struct msgbuf *msgp, 
+            size_t msgsz, int msgflg);
+
+msgid: handle or id returned by msgget().
+msgp : pointer to a data struct of type msgbuf. 
+msgsz : the size of message contents. This size should 
+        NOT include the size of the mtype field of the msgbuf struct. 
+msgflg: can be zero by default. 
+        If the queue is full at the time msgsnd is called msgsnd() will block until space is available in the queue.  If msgflg is set to IPC_NOWAIT, msgsnd() will fail errno set to EAGAIN.
+
+struct mystruct{
+int x;
+char c;
+char array[20];
+};
+struct msgbuf{
+long mtype;
+struct mystruct myvar;
+};
+
+Ex:
+struct msgbuf mymsgbuf;
+
+mymsgbuf.mytpe = 10; 
+
+/* Fill up other fields in mymsgbuf */
+
+ret = msgsnd (msgid, &mymsgbuf, sizeof(struct mystruct), 0);
+if (ret == -1)
+{
+printf ("Errno = %d\n", errno);
+exit (1);
+}
+
+This sends a message of type 10 and the message contents are given in mysmgbuf.myvar.  The third argument should be sizeof(struct mystruct) and NOT sizeof(struct msgbuf).  This argument specifies the length of the message contents.
+
+
+Receiving messages:
+------------------
+
+The system call msgrcv() should be used to receive messages over a queue. 
+
+ssize_t  msgrcv(int msqid, struct msgbuf *msgp, size_t msgsz, long msgtype, int msgflg);
+
+msgid: handle or id returned by msgget().
+msgp : pointer to a data struct of type msgbuf. 
+
+msgsz :the size of message contents. This size should NOT include the size of the mtype field of the msgbuf struct. 
+
+msgtype: the type of the message to be received from the queue.  The first message of this type is received from the queue. 
+
+msgflg: can be zero by default. The following values can be used for
+        msgflg: IPC_NOWAIT, MSG_EXCEPT and MSG_NOERROR.
+         
+        If a message of type msgtype is not present in the queue msgrcv() will block until such a message is available.  If IPC_NOWAIT is included in msgflg, then msgrcv() will fail, with errno set to ENOMSG, instead of blocking.
+
+
+struct msgbuf mymsgbuf;
+memset (&mymsgbuf, 0, sizeof (mymsgbuf));
+ret = msgrcv (msgid, &mymsgbuf, sizeof(struct mystruct), 20, 0);
+if (ret == -1)
+{
+printf ("Errno = %d\n", errno);
+exit (1);
+}
+
+The above code will try to receive a message of type 20 and length of message contents should not exceed sizeof(struct mystruct).
+
+Typically, the third argument of msgrcv() should be equal to the length of the contents of the message sent by a sender process. If a message with type equal to the msgtype argument and with contents whose length differs from the msgsz argument exists on the queue then: 
+
+if msgsz > contents length then the message is received and the return value of msgrcv() is the size of the contents of the message. 
+
+if msgsz < contents length and MSG_NOERROR is not set in msgflg then msgrcv() fails with errno set to E2BIG.
+
+if msgsz < contents length and MSG_NOERROR is set in msgflg then the message is received but the contents are truncated to the size msgsz. 
+
+Once a message is received from a queue, the message itself is removed from the queue. 
+
+Deleting Message Queues:
+
+Once a message is sent over a queue, there is no way to delete the individual message from the queue. Only way to remove a message from the queue is to make a process receive the message. 
+
+If required, entire queue with all the messages in it can be deleted.  The system call for this purpose is msgctl().
+
+msgctl(msqid, IPC_RMID, 0);
+Parameters are: 
+msqid: handle of the queue to be deleted.  
+cmd: should be IPC_RMID for deletion. 
+buf: can be zero when deleting queues. 
+
+
+Retreiving Info of the queue:
+----------------------------
+Kernel maintains the following attributes for each of the message queues on the system:
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;      structure describing 
+                                 operation permission 
+  __time_t msg_stime;            
+                          time of last msgsnd command 
+  __time_t msg_rtime;            
+			  time of last msgrcv command 
+  __time_t msg_ctime;            time of last change 
+  unsigned long int __msg_cbytes;  
+                      current number of bytes on queue 
+  msgqnum_t msg_qnum;            
+                 number of messages currently on queue 
+  msglen_t msg_qbytes;           
+                  max number of bytes allowed on queue 
+  __pid_t msg_lspid;             pid of last msgsnd() 
+  __pid_t msg_lrpid;             pid of last msgrcv() 
+};
+
+struct ipc_perm
+  {
+    __key_t __key;                       Key.  
+    __uid_t uid;                   Owner's user ID.  
+    __gid_t gid;                  Owner's group ID.  
+    __uid_t cuid;                Creator's user ID.  
+    __gid_t cgid;               Creator's group ID.  
+    unsigned short int mode;   Read/write permission.  
+    unsigned short int __seq;        Sequence number.  
+};
+
+The attributes of a message queue can be retreived using the msgctl() system call. 
+  
+struct msqid_ds msgattr;
+
+int ret = msgctl (msgid, IPC_STAT, &msgattr);
+printf ("msgctl returned %x\n", ret);
+if (ret == -1)
+  {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+  }
+
+Changing the attribures of a message queue:
+------------------------------------------
+
+Using the msgctl() system call it is possible to change
+some of the attributes of a message queue. This can be performed only  by the root or the owner / creator of the queue. 
+
+The following fields of struct msqid_ds can be modified
+
+   msg_perm.uid
+   msg_perm.gid
+   msg_perm.mode  /* only lowest 9-bits */
+   msg_qbytes
+
+by a msgctl() call. 
+
+
+struct msqid_ds msgattr;
+
+memset (&msgattr, 0, sizeof (msgattr));
+msgattr.msg_perm.uid=502; 
+msgattr.msg_perm.gid=502; 
+msgattr.msg_perm.mode = 0777;
+
+int ret = msgctl (msgid, IPC_SET, &msgattr);
+
+  printf ("msgctl returned %x\n", ret);
+  if (ret == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+The above code will change th owner ship and group 
+ownership if the queue to the numerical ids 502.
+The permissions would be set to 0777.
+
+Typically, a msgctl() may be invoked to change 
+the security mask alone and not the owner ship. 
+In such a case, msgctl() is invoked first to 
+retreive the current attibutes into a msqid_ds 
+strcuture and only the relevant fields are 
+updated as follows:
+
+struct msgid_ds msgattr;
+
+int ret = msgctl (msgid, IPC_STAT, &msgattr);
+printf ("msgctl returned %x\n", ret);
+if (ret == -1)
+  {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+  }
+
+/* Update only the permission mask.  */
+msgattr.msg_perm.mode = 0777;
+
+/* retain the values of other fields
+of msgattr.msg_perm.gid as returned by 
+the system. */ 
+
+int ret = msgctl (msgid, IPC_SET, &msgattr);
+
+printf ("msgctl returned %x\n", ret);
+  if (ret == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+Note the difference in the second argument to the
+msgctl() calls. IPC_STAT will retreive info from the
+system, where as IPC_SET will make changes to the
+data structure maintained by the kernel.
+
+
+Shared Memory
+-------------
+
+When message queues are used for IPC, data needs to 
+transferd across process and kernel address spaces. 
+This would required certain amount of processing
+in tranfering data across the boundaries. 
+
+When a message is sent, the contents are copied
+from user process address space to kernel 
+address space. Similary, When a message is received,
+the contents are copied from kernel address space to 
+user process address space.
+
+This over head can be avoided using shared memory 
+objects for IPC. A shared memory object is something
+like a data buffer that resides in the kernel address
+space. A user process can request the kernel to map 
+this buffer to its own address space. As a result,
+the shared memory object will be available in a 
+range of addresses in the processes address space. 
+
+A shared memory object needs to be created before 
+it is used for communication amoung multiple 
+processes.
+
+A process that requires to communicate data, 
+will map the shared memory object into its address 
+space and copies the data to be communicated into the
+range of addresses where the shared memory object is 
+mapped.
+
+A processes that requires to receive the data will
+will map the shared memory object into its address 
+space and reads the range of addresses where the 
+shared memory object is mapped.
+
+Since, shared memory objects are mapped into the
+user process address space, there is no overhead
+for copying to or reading from the shared memory
+object. 
+
+The system call shmget() should be used to get a 
+handle to a shared memory object.
+
+int shmid = shmget (k,0);
+
+printf ("shm identifier is %x\n", msgid);
+if (msgid == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+Here, shmid is the handle to the message queue 
+identified by the key k. This handle should be used 
+for mapping the shared memory object to a user process
+address space.  The syntax of shmget is:
+
+int shmget(key_t key, int size, int shmflg);
+
+key: key of the shared memory object.
+size: specifies the number of bytes in the 
+      shared memory object. can be zero when 
+      getting an existing shared memory object. 
+shmflg: can be zero when getting an existing
+        shared memory object. If a new queue 
+        is required to be created using the given key, 
+        then shmflg should include IPC_CREAT. Using 
+        IPC_CREAT and IPC_EXCL as part of shmflg, results 
+        in behaviour similar to open() system call with 
+        O_CREAT and O_EXCL flags argument.
+
+The shared memory object should now be mapped in to
+a processes address space using the  shmat() system
+call. 
+
+ void *shmat(int shmid, const void *shmaddr, int shmflg);
+
+shmid: handle or id returned by shmget().
+shmaddr: the address in the process addres space, where
+         object is to be mapped. If set equal to zero,
+         kernel will decide the address where the object is
+         attached and this address is returned by  
+         shmat(). Typically, this should be zero
+         so that kernel decides. This argument should 
+         be set a non-zero value only if this required
+         mandatorily. 
+shmflg:  can be zero by default. If SHM_RDONLY is included,
+         the shared memory object is attached for read 
+         only operation. If SHM_RDONLY is not included,
+         the shared memory object is attached both 
+         for read and write. Either way, the concerned
+         permissions are required on object. A shared
+         memory object can not be attached for write only. 
+         This argument can also include SHM_RND.
+
+
+Accessing the shared memory object.
+
+The return value of shmat() gives the address in the user 
+process address space where the shared memory object is mapped. 
+To write data to the shared memory object, the process needs just
+copy the data to the address where the shared memory object is mapped.
+The following code demonstrates the same. 
+
+
+void *attach_addr = shmat (shmid, 0, 0);
+
+printf ("Attached at %x\n", attach_addr);
+ if ((int) attach_addr == -1)
+   {
+     printf ("Errno = %d\n", errno);
+     exit (1);
+   }
+
+struct stud{
+int id;
+char name[30];
+} student;
+
+student.id=100;
+strcpy(student.name, "Kumar");
+
+memcpy(attach_addr, &student, sizeof(student));
+
+Here data is copied from a local variable to the shared memory object.
+
+Another process which should receive this student record, needs to 
+attach the shared memory object similarly and should perform a copy 
+of data from the shared memory object to a local variable as:
+
+memcpy(&student, attach_addr, sizeof(student));
+
+
+Detaching a shared memory object:
+---------------------------------
+
+If a process no longer needs to access a shared memory object
+that is mapped into its address space, the process can unmap the
+shared memroy object with the shmdt() system call. 
+
+shmdt(attac_addr);
+
+where attach_addr is the return value of the shmat()  when the
+shared memory object is attached.
+
+
+Deleting Shared memory objects:
+------------------------------
+
+The system call for this purpose is msgctl().
+
+msgctl(msqid, IPC_RMID, 0);
+Parameters are: 
+msqid: handle of the queue to be deleted.  
+cmd: should be IPC_RMID for deletion. 
+buf: can be zero when deleting queues. 
+
+
+Retreiving attributes of a shared memory object:
+-----------------------------------------------
+Kernel maintains the following attributes for each of the
+shared memory objects on the system:
+
+struct shmid_ds {
+                 struct    ipc_perm shm_perm;   operation perms 
+                 int  shm_segsz;           size of segment (bytes) 
+                 time_t    shm_atime;           last attach time 
+                 time_t    shm_dtime;           last detach time 
+                 time_t    shm_ctime;           last change time 
+                 unsigned short shm_cpid;  pid of creator 
+                 unsigned short shm_lpid;  pid of last operator 
+                 short     shm_nattch;          no. of current attaches 
+            };
+            
+struct ipc_perm {
+              key_t  key;
+              ushort uid;    owner euid and egid 
+              ushort gid;
+              ushort cuid;   creator euid and egid 
+              ushort cgid;
+              ushort mode;   lower 9 bits of shmflg 
+              ushort seq;    sequence number 
+            };
+
+
+The info about a shared memory object can be retreived using 
+shmctl() system call as follows:
+
+struct shmid_ds shmattr;
+
+int ret = shmctl (shmid, IPC_STAT, &shmattr);
+if (ret == -1)
+  {
+    printf ("Errno = %d\n", errno);
+    exit (1);
+  }
+
+
+Changing the attributes of a shared memory object:
+---------------------------------------------------
+Typically, shmctl() will be called with IPC_STAT to
+retreive the current attributes of the shared memory 
+object and the same data structure would be used to
+specify the changes as below:
+  
+  struct shmid_ds shmattr;
+
+  int ret = shmctl (shmid, IPC_STAT, &shmattr);
+
+  if (ret == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+  shmattr.shm_perm.mode = 0507;
+
+  ret = shmctl (shmid, IPC_SET, &shmattr);
+
+  printf ("shmctl returned %x\n", ret);
+  if (ret == -1)
+    {
+      printf ("Errno = %d\n", errno);
+      exit (1);
+    }
+
+
+Excercises:
+----------
+
+1) Develop a program  that:
+a) Creates a mesg queue.
+b) Sends a message that has the current system time. The message should be of type 100.  Refer to time(2) and ctime(3) man pages. 
+c) Develop another program that retreives the message and displays the time in it.
+
+
+2) Modify the program in problem one to implement a TIME client/server architecture. 
+
+    a) Client sends a message of type 1, with contents having the client's own process id.
+    b) Server retreives a message of type 1 and replies with a message 
+       * of type equal to the process id it received from client.
+       * with contents having the current system time.
+    c) Client retreives message of type equal to its own process id, and displays the time in it.
+
+
+

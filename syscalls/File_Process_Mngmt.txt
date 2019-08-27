@@ -1,0 +1,718 @@
+                     SYSTEM CALLS FOR FILE MANIPULATION
+                     ----------------------------------
+1) Opening and creating files. 
+
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+int creat(const char *pathname, mode_t mode);
+     
+Opens the  file given in pathname parameter ( absolute or a relative 
+path) and returns a integer, called file descriptor(fd). Valid values
+for the descriptor are zero and greater that zero. Negitive values 
+indicate an error in opening the file. 
+
+int fd = open("myfile",O_RDONLY);
+
+opens an existing file with name myfile for read only 
+operations and the descriptor 
+fd should be used for these operations further. The descriptor
+fd represents the open file until it is explicitly closed with
+a close() system call as:
+
+close(fd);
+
+Internally, kernel uses the descriptor as an index into the 
+per process file descriptor table.  Open gaurantees to return 
+the smallest available index in file descriptor table.  
+Conventionally, fd values of 0,1 and 2 are reserved for stdin,
+stdout and stderr. As a result when a file is opened, by default
+the descriptor value would be greater than 2.
+
+The second argument flags should have one of:
+
+O_RDONLY  - Open the file for input operations only.
+O_WRONLY  - Open the file for output operations only.
+O_RDWR    - Open the file for input and output operations.
+
+Some of the optional flags for second argument:
+O_APPEND  - All output operations are automatically 
+            performed at the current end of the file.
+O_TRUNC   - Once open completes, old data in the file is 
+            completely delelted. File size will be set to zero.  
+	    O_RDWR or O_WRONLY is required for this flag. 
+O_CREAT   - Create the file if it does not exist.
+O_EXCL    - Should be used along with O_CREAT. If the file 
+            already exists, open fails. 
+
+To create a file newfile and open it for reading/writing 
+
+int fd = open ("newfile",O_CREAT| O_RDWR, S_IRWXU); 
+
+If the file newfile already exists, the above call opens the
+existing file and it contents will be retained.  If the 
+requirement is that an already existing file with name 
+newfile should not be opened, O_EXCL needs to be included
+along with O_CREAT. 
+
+int fd = open ("newfile",O_CREAT| O_EXCL| O_RDWR, S_IRWXU); 
+
+will return an error if newfile already exists. O_EXCL is 
+generally used to make sure existing contents of the file 
+newfile are not modified. 
+
+The third argument mode, is required when O_CREAT flag is used. 
+Mode specifies the requested permissions on the created file. 
+
+Mode:
+S_IRWXU   - File owner has read, write and execute permissions.
+S_IRUSR   - File owner has read permission.
+S_IWUSR   - File owner has write permission. 
+S_IXUSR   - File owner has execute permission.
+
+Similarly,  S_IRWXG S_IRGRP S_IWGRP S_IXGRP
+            S_IRWXO S_IROTH S_IWOTH S_IXOTH are defined for the 
+            group and others. 
+
+S_ISUID   - set user ID on execution
+S_ISGID   - set group ID on execution
+S_ISVTX   - sticky bit
+
+The permissions of the newly created file will be 
+requested permissions AND ~umask. 
+
+int fd = open ("newfile", O_CREAT  | O_RDWR, 
+          S_IRWXU  |  S_IRGRP |  S_IWGRP   |  S_IRWXO );
+
+Assume current umask = 023 =        000 010 011 
+Requested Permissions are           rwx rw- rwx
+                                    111 110 111
+                   ~umask   =       111 101 100
+Requested Permissions & ~umask =    111 100 100 
+File permissions are                rwx r-- r--
+
+Simpler to remember this way: 
+Positions with 1 in the umask will be denied. 
+Requested permissions are         rwx rw- rwx
+Assume current umask = 023     =  000 010 011
+Permissions of the file will be   rwx r-- r--     
+
+
+
+creat  is equivalent    to    open    with    flags    equal    to
+       O_CREAT|O_WRONLY|O_TRUNC.
+---------------------------------------------------------------------------
+
+2) Closing files.
+
+ int close(int fd);
+
+The open session of the file is closed and the given file descriptor 
+can not be used further as a hanle to the file. 
+
+Internally, closing will release the corresponding slot in the 
+per process file decriptor table and it will be available for reuse. 
+---------------------------------------------------------------------------
+
+3) Input operations from a file.
+ 
+ssize_t read(int fd, void *buf, size_t count);
+
+Will attempt to transfer count number of bytes from the file given by 
+the handle fd, starting at the current offset in the file,  into buf. 
+
+Will return the number of bytes actually read. The type ssize_t will
+resolve to an signed integral type. Where as, the type of third argument
+count, size_t resolves to a unsigned integral type. 
+
+When a file is opened the offset is set to the begining of the file.  
+After a read() call, the offset in the file is incremented by 
+the number of bytes actually read. 
+
+Ex: Assuming file size is 180 and current offset is 100,   
+the following call 
+
+int num_bytes_read = read(fd, buf, 50);
+
+* will copy 50 bytes starting at offset 100 in file to buf.
+* will set num_bytes_read to 50.
+* will increment the offset in the file to 150. 
+
+The return value of read() may not always be equal to the
+requested number of bytes to read in the third argument count. 
+The previous read() sets the offset to 150 and size of the
+file is 180, so the following call
+
+num_bytes_read = read(fd, buf, 50);
+
+will result in num_bytes_read set to 30 as there are only 30 more
+bytes in the file starting at offset 150.  
+
+Subsequent reads on this fd will return 0.
+
+Return value of 0 indicates end of file has been reached. 
+
+Return value of -1 indicates an error and errno is set appropriately. 
+
+---------------------------------------------------------------------------
+
+4) Output operations to a file. 
+                                                                                
+ssize_t write(int fd, const void *buf, size_t count);
+
+Will attempt to transfer  count number of bytes to the file given by 
+the handle fd, starting at the current offset in the file,  from buf. 
+
+Will return the number of bytes actually written. 
+The offset in the file is incremented by the number of bytes 
+actually written to the file. 
+
+Return value of -1 indicates an error and errno is set appropriately. 
+
+On succes, the current offset in the file is incremented by a value
+equal to count. 
+
+-------------------------------------------------------------------------------
+
+5) Commiting data on the device.                                                                                
+int fsync(int fd);
+
+Instructs the device to commit data and metadata of the file. 
+Will wait till device reports confirmation.
+
+Does not commit the directory entry. Need to invoke fsysnc() on the 
+directory entry itself if needed. 
+
+int fdatasync(int fd);
+Same as fsync() except that it does not commit metadata.                                                                                
+
+---------------------------------------------------------------------------
+
+6) System call behaviour on failure. 
+
+When any of the system calls fails, the return value will be negitive 
+and the global variable errno is set to a value indicating the 
+reason for failure. Example values for errno are:
+
+
+#define ENOENT           2      /* No such file or directory */
+#define EACCES          13      /* Permission denied */
+#define EINVAL          22      /* Invalid argument */
+
+defined in /usr/include/asm/errno.h              on RedHat
+defined in /usr/include/asm-generic/errno-base.h on SUSE
+
+In order make use of the errno global variable, defined by 
+the c library, the following two lines are required to be 
+included in a program.  
+
+#include <errno.h>
+extern int errno;
+
+Example usage: 
+
+#include <errno.h>
+extern int errno;
+
+  if ((fd1 = open (argv[1], O_RDONLY)) < 0)
+    {
+      printf( ("Errno is %d\n", errno);
+      exit (2);
+    }
+
+The library function perror() can also be used as follows: 
+
+void perror(const char *s);
+
+When a system call fails the  variable errno is set to a value 
+that indicates what went wrong.  The function perror()  
+serves to translate this error code into human-readable text message.
+
+Ex: 
+  if ((fd1 = open (argv[1], O_RDONLY)) < 0)
+    {
+      perror ("Error opening data file");
+      exit (2);
+    }
+ 
+perror() will generate an error message on stderr, that includes 
+1) A message indicating the reason for failure(from errno).
+2) The string given as argument to perror().
+
+Ideally, the string passed as arument to perror() should include the 
+location of the error in the program with the macros
+ __LINE__ and __FILE__. 
+
+Ex:
+char mesg[256];
+  if ((fd1 = open (argv[1], O_RDONLY)) < 0)
+    {
+      sprintf(mesg,"Error opening data file. At line %d in file %s\n"i,
+                       __LINE__, __FILE__);
+      perror (mesg);
+      exit (2);
+    }
+---------------------------------------------------------------------------
+
+6) Duplicating descriptors.
+ 
+int dup(int oldfd);
+
+Will look for a least unused descriptor and makes it a duplicate of fd. 
+Assuming fd is handle to file file1, 
+
+int dup_fd = dup(fd); 
+
+will create a duplicte of fd and in dup_fd. To perform an I/O
+on the file file1, either fd or dup_fd can be used. 
+
+Assuming current offset associated with fd is 100, 
+
+read(fd, buf, 20) will read 20 bytes from file file1 and 
+current offset is changed to 120. 
+
+read(dup_fd, buf, 30) will read the next 30 bytes from file file1 and 
+current offset is changed to 150. 
+
+
+int dup2(int oldfd, int newfd);
+dup2  makes  newfd  to be the copy of oldfd, 
+closing newfd first if necessary.
+
+Return value will be the new duplicate. 
+--------------------------------------------------------------------------
+
+7) Getting the Metadata of files:
+
+int stat(const char *path_name, struct stat *buf);
+int fstat(int filedes, struct stat *buf);
+int lstat(const char *file_name, struct stat *buf);
+
+
+These functions retreive information from the inode table entry of a file 
+into the structure given by buf. The stat structure given in 
+/usr/include/bits/stat.h is 
+ 
+              struct stat {
+                  dev_t         st_dev;      /* device */
+                  ino_t         st_ino;      /* inode */
+                  mode_t        st_mode;     /* protection */
+                  nlink_t       st_nlink;    /* number of hard links */
+                  uid_t         st_uid;      /* user ID of owner */
+                  gid_t         st_gid;      /* group ID of owner */
+                  dev_t         st_rdev;     /* device type (if inode device) */                  off_t         st_size;     /* total size, in bytes */
+                  blksize_t     st_blksize;  /* blocksize for filesystem I/O */
+                  blkcnt_t      st_blocks;   /* number of blocks allocated */
+                  time_t        st_atime;    /* time of last access */
+                  time_t        st_mtime;    /* time of last modification */
+                  time_t        st_ctime;    /* time of last change */
+              };
+
+stat() retreives info of the file given by the path_name. 
+fstat() retreives info of the file given by the handle filedesc. 
+lstat() retreives the info of a sym link. 
+
+Ex: sf1 is a soft link to file f1. stat("sf1",buf) will retreive info from the
+inode of f1 and not of the inode of sf1 itself( Unlike hard links, 
+soft/sym link files have their own inode table entries  and inode numbers.). 
+Where as, lstat("sf1", buf) will retreive info from the inode of sf1. 
+
+Search permission on all dirs in the path is required. No permission 
+is needed on the file itself.(why?) 
+
+-------------------------------------------------------------------------
+
+8) Checking access to files:
+int access(const char *pathname, int mode);
+
+Checks if the file pathname can be accessed for read, write and execute 
+operations. 
+    
+mode - One or more of R_OK, W_OK, X_OK and F_OK( check for existence)
+
+Return value is zero if all the requested permissions are allowed
+else it is -1 and  errno is set. 
+
+Incase of symlinks, permissions of the file referred to by symbolic 
+link are tested.
+
+-------------------------------------------------------------------------
+
+9) Changing permission of a file:
+
+int chmod(const char *path, mode_t mode);
+
+The security permissions of the file given in path are set to the 
+value given in mode. It takes values that are specified for the third
+argument mode of open() system call. 
+
+The permissions specified with mode argument are exactly set as requested
+INDEPENDENT of the umask value.                                                                              
+--------------------------------------------------------------------------
+
+10)Changing the ownership  of files:
+
+int chown(const char *path, uid_t owner, gid_t group);
+                                                                        
+Only super user can change the onwer ship.
+Owner of file can change group to one the groups to which the user 
+belongs.
+
+-------------------------------------------------------------------------
+
+11) Deleting files:
+
+int unlink(const char *pathname);
+
+unlink() system should be used for deleting files. The name unlink 
+stems from the fact that a newly created file is a link file with 
+link count 1. 
+ 
+The link count stored in the inode of the file given by pathname is 
+decremented by one.  If link count reaches zero and 
+no process has the file open, the file will be deleted from the 
+filesystem.
+
+If link count reaches zero and  a process has the file open, 
+the file will remain in existance until the last process that has the 
+file open closes it. 
+
+If the pathname is a symlink, the symlink will be removed and 
+the file to which the symlink points will not be effected. Infact, 
+the rm command calls unlink() system call and this behaviour can 
+be tested with rm command. 
+
+----------------------------------------------------------------------------
+
+
+
+                  PROCESS MANAGEMENT SYSTEM CALLS
+
+1) Creating processes:
+
+pid_t fork(void);
+
+Will create a new process which will be running the same program 
+as the parent. 
+
+ex: 
+main()
+{
+pid_t pid;
+printf("Before fork\n");
+pid = fork();
+printf("After fork\n");
+}
+
+First printf will be executed only by the parent process. 
+On call to fork(), a child process is created and the fork() returns.
+By the time fork() returns, parent and child process would 
+both be existing. The child process also will return from fork() and 
+start executing the statements immediately following the fork() call. 
+As a result, both parent and child will execute second printf(). 
+In the parent,  pid will have the process id of the newly created 
+process. In the child pid will have a value of zero. 
+ 
+Both parent and child are eligible to be scheduled to run on the CPU. 
+Since on a uniprocessor systems, only one process can be executing 
+at any time, either the parent continues to run and child will be 
+scheduled later or vice versa.  As a result, parent could run 
+first then child or child first and parent next. 
+
+A process can only be created by another process, using the fork() call. The 
+first user process on the system is hand crafted by the kernel during
+booting. This process has a process id of 1 and is generally refered to 
+as the init process. Init process is the final ancesstor of every user 
+process on the system. 
+
+The output of the following ps commands indicates that  PPID of the bash 
+shell is 2233 which is the process id of the login process. The login 
+process has its PPID equal to 1.
+
+pts/2:srini$ ps -l
+F S   UID   PID  PPID  C PRI  NI ADDR    SZ WCHAN  TTY          TIME CMD
+0 S   501  2251  2233  2  80   0    -  1088 wait4  pts/2    00:00:00 bash
+0 R   501  2349  2251  0  83   0    -   780 -      pts/2    00:00:00 ps
+pts/2:srini$ ps -le | grep 2233
+0 S   501  2233     1  5  75   0    -  5141 schedu ?        00:00:01 login
+0 S   501  2251  2233  1  75   0    -  1088 wait4  pts/2    00:00:00 bash
+pts/2:srini$
+--------------------------------------------------------------------------
+
+2) Process Termination:
+A proces terminates itself when it calls exit() system call or does a return 
+in the main() of the c program.  The exit() system call requires an int 
+argument that indicates the exit status of the process. 
+
+int process_exit_status = 0;
+
+exit(process_exit_status);
+
+Conventionally, in shell parlance, an exit status of 0 indicates 
+successful completion of the job for which a process is executed. 
+Other values indicate failure.  
+
+The parent of a process can wait for the temrination of its child process
+using the wait() system call. Zombie process is a process which has terminated, 
+but whose parent has not yet called wait() to recieve its exit status. 
+
+--------------------------------------------------------------------------
+3) Running executables in a process:
+
+int execl(const char *path, const char *arg, ...);
+
+A call to execl() will request the kernel to replace the 
+process address space of the current process with the 
+contents of the executable file given in  path parameter. The file given 
+by path should be an executable file or a shell script. 
+
+Ex: 
+main()
+{
+printf("Before execl()\n");
+execl ("/home/kumar/myprog", "myprog", "arg1", "arg2", 
+                          "arg3", (char *) 0);
+
+printf("This printf() should not be executed.\n");
+
+}
+
+After executing the first printf(), execl() call will result in 
+myprog program being executed in the current process. As a result the 
+original program will not execute any further beyond the call to 
+execl(). The printf() after the call to execl() will not be 
+executed if execl() succeeds.
+
+Assuming the executable myprog was created from a c source file, 
+the execution in myprog will start at the first statement of 
+the main() function. The list of arguments starting with the
+second argument of execl() would be made available in the
+argv[] vector of main().
+
+"myprog"    -- argv[0]
+"arg1"      -- argv[1]
+"arg2"      -- argv[2]
+"arg3"      -- argv[3]
+(char *)0   -- argv[4]
+
+The second argument to the execl(), which is available in argv[0] 
+in the new program executed, is conventionally set to the name of 
+the program being executed. 
+
+execl() requires that the argument list is terminated with a
+NULL pointer as given above. 
+
+If the call to execl() succeeds it should not return as the new 
+program will be running in the current process. 
+
+No new process will be created  by execl() as the current process
+itself will start executing the program given in the first 
+argument to execl().  As a result process id will not be changed. 
+---------------------------------------------------------------------------
+4) Effect of fork() and exec() on File Descriptor Table:
+
+
+Consider the following code for the process P1 which opens two files file1 and
+file2. Since, the descriptors 0,1 and 2 are reserved for the std I/O devices, 
+fd1 and f2 will have values 3 and 4 respectively. 
+
+main()
+{
+int fd1, fd2;
+char buff1[256], buff2[256];
+pid_t pid;
+
+fd1=open("file1", .......);
+fd2=open("file2", .......);
+read(fd1, buff, 20);
+
+ pid = fork();
+
+ if ( pid > 0) 
+   { /* parent block     */ 
+   } 
+ 
+ if( pid == 0)
+   { /* child block */ 
+    write( fd1, buff2, 100);
+    int fd3 = open("file3", ...);
+
+   } 
+} /* end of  main */ 
+
+Diagram 1 below depicts the state of file descriptor table of process P1 and 
+that of global file table, with the corresponding associatiations indicated. 
+
+                                 Diagram 1
+                                 ---------
+    
+         FDT of Process P1                                        Global File Table  
+         ----------------                                   ---------------------------
+      0 |                |-----------------------------    |                           |
+        |----------------|                             |   |                           |
+      1 |                |--------------------------   |   |---------------------------|
+        |----------------|                          |   -->| Entry for Terminal Device |
+      2 |                |----------------------    |      |---------------------------| 
+        |----------------|                      |   |      |                           |
+      3 |                |-----------------     |   |      |                           |
+        |----------------|                 |    |   |      |---------------------------|
+      4 |                |------------     |    |    ----->| Entry for Terminal Device |
+        |----------------|            |    |    |          |---------------------------|
+        |                |            |    |    |          |                           | 
+        |                |            |    |    |          |                           |
+        |                |            |    |    |          |---------------------------|
+        |                |            |    |     --------->| Entry for Terminal Device |
+         ----------------             |    |               |---------------------------| 
+                                      |    |               |---------------------------|
+                                      |     ---------------> Entry for file1           |
+                                      |                    |---------------------------|
+                                      |                    |                           |
+                                      |                    |                           |
+                                      |                    |---------------------------|
+                                       ------------------->| Entry for file2           |
+                                                           |---------------------------| 
+                                                           |                           | 
+                                                           |                           | 
+                                                            ---------------------------
+                            
+Child process P2 is created by the fork() call. Upon creation, the file descriptor 
+table of process P2 will be an exact replica of the file descriptor table of process
+P1. Every entry in file descriptor table of P2 will be associated
+with entries in global file table exactly as in the file descriptor table of P1. 
+The following diagram 2 depicts this state. 
+
+                                Diagram 2
+                                ---------
+                                                               
+         FDT of Process P1                                        Global File Table    
+         ----------------                                   ---------------------------
+      0 |                |-----------------------------    |                           | 
+        |----------------|  ^                          |   |                           | 
+      1 |                |--------------------------   |   |---------------------------|
+        |----------------|  | ^                     |   -->| Entry for Terminal Device |
+      2 |                |----------------------    |      |---------------------------|
+        |----------------|  | |  ^              |   |      |                           | 
+  fd1=3 |                |-----------------     |   |      |                           | 
+        |----------------|  | |  |         |    |   |      |---------------------------|
+  fd2=4 |                |------------     |    |    ----->| Entry for Terminal Device |
+        |----------------|  | |  |    |    |    |          |---------------------------| 
+        |                |  | |  |    |    |    |          |                           | 
+        |                |  | |  |    |    |    |          |                           | 
+        |                |  | |  |    |    |    |          |---------------------------|
+        |                |  | |  |    |    |     --------->| Entry for Terminal Device |
+         ----------------   | |  |    |    |               |---------------------------| 
+                            | |  |    |    |               |---------------------------|
+                            | |  |    |     ---------------> Entry for file1           |
+         FDT of Process P2  | |  |    |      ^             |---------------------------| 
+         ----------------   | |  |    |      |             |                           | 
+      0 |                |--  |  |    |      |             |                           | 
+        |----------------|    |  |    |      |             |---------------------------|
+      1 |                |----   |     ------------------->| Entry for file2           |
+        |----------------|       |           |      ^      |---------------------------| 
+      2 |                |-------            |      |      |                           | 
+        |----------------|                   |      |      |                           | 
+  fd1=3 |                |--------------------      |      |                           |
+        |----------------|                          |      |                           |
+  fd2=4 |                |--------------------------       |                           | 
+        |----------------|                                 |---------------------------| 
+  fd3=5 |                |-------------------------------->| Entry for file3           | 
+        |----------------|                                 |---------------------------| 
+        |                |                                 |                           | 
+        |                |                                 |                           | 
+        |                |                                  ---------------------------  
+        |                |                           
+        |                |                          
+         ----------------                          
+                            
+As a result, even in process P2 also the descriptors fd1 and fd2 will be associated with 
+files file1 and file2.  After the fork() call, the global file table entry of file1 
+will be associated by fd1 descriptor in both process P1 and P2.  Assuming the call 
+read(fd1, buff1,20) in P1, before the fork() is successful, the offset stored in the 
+global file table entry of file1 will be set to 20. As a result,  the call 
+write(fd1,buff2,100) in the child process P1 will start at offset 20 in file1.  
+                        
+The child process P2 opens the file file3 with  
+fd3=open("file3", ...);
+
+The descriptor fd3 will have a value of 5 and fd3 will be a valid file
+descriptor only in the child.  In case the parent P1 executes
+int fd4 = open("file4",...); 
+in the block of if (pid > 0) then fd4 also will have a value of 5 as the file
+descriptor table of P1 has this index still unused. 
+
+
+----------------------------------------------------------------------------
+
+Excercises:
+File Management
+
+1) Develop a program that displays the contents of the file /etc/passwd.
+
+2) 
+   a) Develop a program that creates a file MyText in your home dir. The
+   program should read data from stdin and save it to the newly 
+   created file. 
+
+   b) Modify the program in problem 2a, to display an error message 
+   if file MyText already exists and no new data should be 
+   saved to the file.
+
+   c) Modify the program in problem 2a, so that if the file MyText 
+   already exists, its entire contents should be deleted and 
+   new contents should be read from stdin.
+
+   d) Modify the program in problem 2a, so that if the file MyText 
+   already exists, its entire contents are retained and the new
+   data from stdin should also be saved to the file.   
+
+3) Assume the following data structure is used to process info of 
+   employees of a dept. 
+
+   struct EMP { 
+   int id;
+   char name[50];
+   };
+
+   a) Generate a program that reads the ids and names of three 
+   employees into  such structures and saves the contents
+   of these structures to a database  file. 
+
+   b) Generate a program that displays the three employees
+   details stored in the database file. 
+
+   c) Assume there is a name change for one of the three 
+   employees. Generate a program  that updates the database
+   file to reflect the changed name.  
+
+   d) How many bytes of data do you think is saved to the database
+   file for an employee with name Suresh. Is this optimal in 
+   terms of storage space? Come up with an alternative. 
+
+4) Develop a program that displays the names of all entries 
+   in your home directory( Hint: use opendir() and readdir()).  
+   Modify the program to display the size and owner id of the
+   entries also. Research on how to get the type of an entry
+   in terms of dir, regulur file, char special file and so on.
+
+5) Develop a program that replaces itself with the ls command.
+   When the program is executed, the output should be from 
+   the ls command.
+
+6) Develop a program that reads a command name, executes it 
+   and displays its exit status.
+
+7) Develop a wrapper program for the grep command that displays
+   the result of pattern matching in upper case. The output of 
+   the grep command should be captured and converted to upper 
+   case before displaying. 
+   
+   Ex. MyProg root /etc/passwd 
+   should invoke grep root /etc/passwd internally. The line in 
+   /etc/passwd that looks like 
+
+   root:x:0:0:/root:/bin/bash 
+   should be displayed as 
+
+   ROOT:X:0:0:/ROOT:/BIN/BASH
+
+ 
+

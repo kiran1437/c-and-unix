@@ -1,0 +1,85 @@
+#include<unistd.h>
+#include<fcntl.h>
+
+#include<sys/stat.h>
+#include<sys/types.h>
+
+#include<errno.h>
+extern int errno;
+main ()
+{
+  int ret;
+  int fd = open ("/tmp/fcntl_test",
+		 O_CREAT | O_WRONLY | O_APPEND,
+		 S_IRWXU | S_IRWXO);
+
+
+  ret = fcntl (fd, F_GETFL, 0);
+
+  printf ("fcntl returned = %#010x\n", ret);
+  if (ret == -1)
+    {
+      printf ("ret = %d, errno = %d\n", ret, errno);
+      exit (1);
+    }
+
+/* Following are definitions of O_RDONLY and so on.. 
+   in /usr/include/bits/fcntl.h   
+#define O_ACCMODE          0003
+#define O_RDONLY             00
+#define O_WRONLY             01
+#define O_RDWR               02
+
+Here O_ACCMODE has the bits of ret, which represent the read, 
+write modes of open. So, and with O_ACCMODE to get the open mode bits of 
+ret. 
+*/
+  printf("O_ACCMODE macro value %x\n", O_ACCMODE);
+  if ((ret & O_ACCMODE) == O_RDONLY)
+    printf ("Readonly\n");
+
+  if ((ret & O_ACCMODE) == O_WRONLY)
+    printf ("Write only\n");
+
+  if ((ret & O_ACCMODE) == O_RDWR)
+    printf ("Read Write\n");
+
+  printf("O_APPEND macro value %x\n", O_APPEND);
+  if (ret & O_APPEND)
+    printf ("Append \n");
+
+  printf("O_NONBLOCK macro value %x\n", O_NONBLOCK);
+  if (ret & O_NONBLOCK)
+    printf ("NON BLOCK\n");
+
+  printf("O_CREAT macro value %x\n", O_CREAT);
+  printf("O_EXCL macro value %x\n", O_EXCL);
+  if (ret & O_CREAT)
+    printf ("CREAT\n");
+  if (ret & O_EXCL)
+    printf ("EXCL\n");
+
+  int ret1 = fcntl (fd, F_SETFL, ret| O_NONBLOCK);
+  if (ret1 == -1)
+    {
+      printf ("ret1 = %d, errno = %d\n", ret1, errno);
+      exit (1);
+    }
+  
+  ret = fcntl (fd, F_GETFL, 0);
+
+  printf ("fcntl returned = %#010x\n", ret);
+  if (ret == -1)
+    {
+      printf ("ret = %d, errno = %d\n", ret, errno);
+      exit (1);
+    }
+  
+  printf("O_APPEND macro value %x\n", O_APPEND);
+  if (ret & O_APPEND)
+    printf ("Append \n");
+
+  printf("O_NONBLOCK macro value %x\n", O_NONBLOCK);
+  if (ret & O_NONBLOCK)
+    printf ("NON BLOCK\n");
+}

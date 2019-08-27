@@ -1,0 +1,114 @@
+
+Builtin [   :
+-------------
+
+
+1) Exact string comparision
+ 
+	[ str1 == str2 ]
+	[ str1 =  str2 ]
+	[ str1 != str2 ]
+
+2) Lexicographic comparision 
+
+       [  str1 \< str2 ]
+       [  str1 \> str2 ]
+
+      
+3) Need to use -a, -o and ! for logical combinations
+
+	[  "$X" -gt 100 -a      -f filename ]         
+
+        [  -r filename  -o   "$Y"   \<  hello ]
+
+	[ ! -r file ]
+
+        [ ! ( -w /etc/passwd -a -w /bin  )  ] 
+
+
+
+Compound command [[ :
+---------------------
+
+1) Pattern matching 
+
+	[ string == pattern ]
+	[ string =  pattern ]
+	[ string != pattern ]
+
+     pattern is a file name pattern
+
+
+	[[ hello == h* ]]
+	echo $?
+	0
+
+	[[ hello == g* ]]
+	echo $?
+	1
+
+	[[ hello != g* ]]
+	echo $?
+	0
+
+Quotes for pattern makes it exact string comparision
+
+	[[ hello == 'h*' ]]
+ 	echo $?
+	1
+
+	[[ h* == 'h*' ]]
+	echo $?
+	0
+ 
+2) Lexicographic comparision 
+
+	[[  str1 < str2 ]]
+	[[  str1 > str2 ]]
+
+	[[ hello  < world ]]
+	echo $?
+	0
+
+	[[ hello  > world ]]
+	echo $?
+	1
+
+3) !, && and || can be used for comparision.
+    Error to use    -a and -o  for logical AND and OR ops.
+
+	[[ -r /etc/passwd && 30 -gt 20 ]]
+	echo $?
+	0
+
+	[[ -r /etc/passwd && 30 -lt 20 ]]
+	echo $?
+	1
+
+	[[ -r /etc/passwd -a  30 -gt 20 ]]
+	ksh: syntax error: `-a' unexpected
+
+
+
+
+4)  Regular expression matching (ERE)
+
+	[[ hello =~ ^h ]]
+	echo $?
+	0
+
+	[[ hello =~ o$ ]]
+	echo $?          
+	0
+
+	[[ hello =~ ^g ]]
+	echo $?          
+	1
+
+	[[ hello =~ ll ]]
+	echo $?          
+	0
+
+
+ 
+

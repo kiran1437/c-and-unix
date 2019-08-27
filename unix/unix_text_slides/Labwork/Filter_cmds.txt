@@ -1,0 +1,96 @@
+hanges A’s to 1’s…
+$ tr ABC 12k
+
+#Deletes all occurrences of ‘a’ from file data
+$ cat data | tr –d “a”
+
+#Deletes multiple consecutive spaces to one space in file data
+$ cat data | tr –s “ ”
+
+#Changes lowercase letters to uppercase in file data
+$ cat data | tr “[a-z]” “[A-Z]” 
+
+#Deletes  all characters except ‘a’ in file data
+$ cat data | tr –cd “a”
+
+
+
+			cut
+
+Displays fields/columns from a file
+
+#Displays 5 to 10th characters from data
+$ cut –c5-10 data
+
+#Displays 5 ,6 and 10th characters from data
+$ cut –c5,6,10 data
+
+#Displays the 5 and 6th fields from data
+$ cut –d”:” -f5,6 data
+
+
+			grep
+
+Pattern matching tool.
+
+grep options pattern filenames
+
+oprtions
+
+c	Total count of matching lines
+i	Ignore case
+l	Display only file name
+n	Display line number before matching line
+v        	Display non matching lines
+
+
+Metacharacters used in building regular expressions
+Basic Regular Expressions 
+\	Escape meaning of metacharacter.
+^	Matches beginning of line.
+$	Matches end of line.
+.	Matches any one character.
+[ ]	Matches any one character in set.
+[^]	Matches any one character not in set.
+*	Matches zero or more occurrences of
+	 preceding regular expression.
+Extended  Regular Expressions
+( )	Grouping
+|	Alternate regular expression
++	Matches one or more occurrences of 
+	preceding regular expression.
+?	Matches zero or one occurrences of preceding 
+	regular expression.
+
+
+
+
+data:
+----
+e001:nancy:elect:1200
+eabc:sham:mech:8900
+a006:raman:elect:9999
+r002:sam:civil:7800
+q007:sheela:admin:3200
+ p002:pawan:elect:e001
+s900:shela:mech:2300
+p9023:shla:mech:4520
+c1x:sheeela:mech:8000
+
+
+$ grep 'e001' data
+
+$ grep '^e001' data
+
+$ grep 'e001$' data
+
+$ grep '^…7' data
+
+$ grep '^[ae]' data
+
+$ grep '^[^ae]' data
+
+$ grep '^[^r]*$' data
+
+$ grep -E  'sheela|elect' data
+

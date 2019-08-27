@@ -1,0 +1,108 @@
+Employee Database System Implementation on Linux
+------------------------------------------------
+
+Information about the departments and about the 
+employees in those departments needs to be maintained.
+Users of the system should be able to introduce new 
+departments, new employees and their association with
+various departments. Users also should be able to 
+delete information about the departments and employees.
+Users should also be able to retrieve information 
+selectively. Ex: Employees belonging to department X. 
+
+
+Information required to be stored and managed:
+
+Department: 
+1) ID an integral item. Each dept. should have a unique ID.
+2) Name of the dept. Max number of chars should be 20.
+3) List of employees.
+4) Department head. 
+
+
+Employee:
+1) ID an integral item. Each employee should have a unique ID.
+2) Name of the employee. Max number of chars should be 54.
+   White space can be included. 
+3) Salary.
+4) ID of the department to which the employee belongs.
+5) Manager's ID.
+
+
+Programs required to implement the system.
+
+1) Server program:
+   This program is responsible for storage, retrieval and deletion of 
+   information. Should receive requests from clients which involve 
+   information storage, retrieval and deletion. 
+
+2) Client program: 
+   This program is responsible for user interface. Should read requests
+   for information storage, retrieval and deletion from the user and 
+   communicate the requests to the server program. Should wait for the 
+   responses from the server and display the responses to the user. 
+ 
+
+Client program is responsible only for the UI part and does not directly 
+handle information processing requests. It should request the server for any 
+information management requests and receives the responses from the server. 
+
+The server program which is responsible for information management should 
+handle information storage, retrieval and deletion requests, which it receives 
+from the client programs. The server program should not generate any responses
+on screen. It should all ways communicate the responses to the concerned clients.
+
+IPC mechanisms for communication can be selected as required. 
+
+The client program should display a prompt and read a request from the user. 
+
+Information storage requests:
+=============================
+
+1) Client prompt:> INSERT DEPTID=number DEPTNM=name DEPTHD=dept.head.id
+
+Should add new department information as given. Should verify that DEPTID should
+be a number greater than zero. Should verify if dept.head.id
+is a valid employee id. If it is not a valid employee id, still the 
+department info should be stored and a message should be displayed to 
+the user indicating employee details for the given dept.head.id need to be
+stored as part of employee details. 
+
+2) Client prompt:> INSERT EMPID=number EMPNM=name EMPSAL=number 
+   EMPDPT=dept.id EMPMGR=manager.id
+
+Should add new employee information as given. Verification should be performed
+to check if Manager id and department id are valid existing ids. 
+
+Information deletion requests:
+=============================
+1) Client prompt:> DELETE DEPTID=number 
+
+Should delete the information for given department. For each employee belonging
+to the dept, the dept id should be set to 0.
+
+2) Client prompt:> DELETE EMPID=number 
+
+Should delete the information for the given employee.
+
+If the employee id happens to be that of a department head, a message should
+be displayed to the user indicating so.
+
+
+Information retrieval requests: 
+==============================
+1) Client prompt:> QUERY DEPTID=200
+
+Should display the all details of the corresponding dept. 
+
+2) Client prompt:> QUERY EMPID=100
+
+Should display the all details of the corresponding employee. 
+
+3) Client prompt:> QUERY DEPTID=200 EMPID=*
+
+Should display the details of all the employees belonging to the given dept. 
+
+4) Client prompt:> QUERY MNGRID=300 EMPID=*
+
+Should display the details of all the employees reporting to the given manager.

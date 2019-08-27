@@ -1,0 +1,58 @@
+VI Editor
+Insert commands  :
+
+
+
+i      -	 To insert a single character of characters.
+I      -    Insert text at beginning of line.
+a     -    To append a single characters or characters.
+A    -     Append text to end of current line.
+o     -    Open new line below cursor for text.
+O    -     Open new line above cursor for text.
+
+
+
+
+Edit Commands  : 
+
+	r         -     	For changing a single character.
+	R        -     	Replace mode.
+	x         -     	For deleting a single character.
+	dd       -   	Delete one line
+	ndd     -	Delete n line
+	dw	-    	Delete one word
+	ndw	-   	 Delete n word
+	cw  	- 	Changes a word at a time and
+	2cw  	-	Changes 2 words at a time.
+	D    	-	deletes   all the characters from the 				current character till the end of the line.
+	yy   	-	Yanks the current line into the buffer
+	p	 . 	Paste below cursor.
+	P 	.	 Paste above cursor.
+
+
+
+
+Moving the  Cursor :
+
+h      		moves left one space
+i      		moves down one line
+k      		moves up one line
+I      		moves right one spaces
+
+
+
+Pattern searching :
+
+/ pattern<CR>   	
+
+n     		Repeat search in the same direction
+N     		Repeat search in the opposite direction
+
+ex commands
+
+:w 		Save and resume editing.
+:wq		Save and quit.
+:q		Quit without saving
+:q!		Forced quit
+:! Command	Execute command from vi
+

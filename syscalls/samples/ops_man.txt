@@ -1,0 +1,27 @@
+OPERATOR(7)	     BSD Miscellaneous Information Manual	   OPERATOR(7)
+
+NAME
+     C operator - C operator precedence and order of evaluation
+
+DESCRIPTION
+     This manual page lists C operators and their precedence in evaluation.
+
+	   Operator				Associativity
+	   --------				-------------
+	   () [] -> .				left to right
+	   ! ~ ++ -- + - (type) * & sizeof	right to left
+	   * / %				left to right
+	   + -					left to right
+	   << >>				left to right
+	   < <= > >=				left to right
+	   == !=				left to right
+	   &					left to right
+	   ^					left to right
+	   |					left to right
+	   &&					left to right
+	   ||					left to right
+	   ?:					right to left
+	   = += -= *= /= %= <<= >>= &= ^= |=	right to left
+	   ,					left to right
+
+BSD				August 24, 2003				   BSD

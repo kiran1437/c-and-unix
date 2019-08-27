@@ -1,0 +1,267 @@
+Metacharacters used in building regular expressions
+
+BRE:
+----
+\	Escape meaning of metacharacter.
+^	Matches beginning of line.
+$	Matches end of line.
+.	Matches any one character.
+[ ]	Matches any one character in set.
+[^]	Matches any one character not in set.
+*	Matches zero or more occurrences of
+	 preceding regular expression.
+
+
+ERE:
+----
+
+( )	Grouping
+|	Alternate regular expression
++	Matches one or more occurrences of 
+	preceding regular expression.
+?	Matches zero or one occurrences of preceding 
+	regular expression.
+
+
+RE	Lines
+----------------------------------------
+a	
+	xyza123
+	a123
+	xyza
+	aaaaa
+	a
+
+        qwer23412       DOESN'T MATCH
+-----------------------------------------
+abc	
+	xyzabc123
+	abc123
+	xyzabc
+	abcabc
+	abc
+
+        ab bc ca       DOESN'T MATCH 
+	ab c           DOESN'T MATCH 
+-------------------------------------------
+^abc	123^abc 1234"  DOESN'T MATCH
+0123	
+	abc123
+	abcabc
+	abcQWER QWE RQWE R
+	abc
+-------------------------------------------
+abc$	123abc$qwer   DOESN'T MATCH	
+   \n  
+	xyzabc
+	abcabc
+	abc
+-------------------------------------------
+^abc$ 	abc	
+01234  	abcabc        DOESN'T MATCH 
+    \n
+----------------------------------------------
+^ab^cd	
+012345	ab^cdqwerqwerqwer
+
+----------------------------------------------
+ab$cd$	qwerwe ab$cd
+
+--------------------------------------------
+
+^^	^qwerrrr
+	qwerrrr         DOESN'T MATCH
+-----------------------------------------------
+
+$$	qwer$
+	qwerqwe	        DOESN'T MATCH
+---------------------------------------------
+^$   	               MATCHS EMPTY LINES
+01      
+ \n
+
+^\$	$qwer
+	$asdf
+	asdfsad$asdfds	DOESN'T MATCH
+
+\^$	asdfd^
+	qwere^
+
+\^\$	sdfsadf ^$ werew
+
+\\ 	asdf \ qwerqwe
+
+--------------------------------------------
+a.b	apb
+	axb
+	a+b
+	a*b
+	a.b
+	aab
+	abb
+	a b 
+        
+
+ 	ab             DOESN'T MATCH
+----------------------------------------------
+
+
+a\.b	a.b
+	apb	      DOESN'T MATCH
+	axb           DOESN'T MATCH	
+----------------------------------------------
+a[pqr]b	
+        apb
+	aqb
+	arb
+	aab          DOESN'T MATCH	
+	apqrb        DOESN'T MATCH	
+----------------------------------------------
+a[^pqr]b 
+      
+        axb
+	a b
+	 
+	apb     DOESN'T MATCH
+----------------------------------------------
+
+a[b^c]d
+        a^d
+	abd
+	acd
+
+	axd    DOESN'T MATCH
+
+--------------------------------------------
+^a^b[^c^d]
+        
+        a^bx
+        a^b^  DOESN'T MATCH
+---------------------------------
+a[p-z]b	
+        apb
+	aqb
+	arb
+	aab	    DOESN'T MATCH
+	a-b         DOESN'T MATCH
+----------------------------------------------
+a[-p-z]b	
+	a-b        
+        apb
+	aqb
+	arb
+	aab	    DOESN'T MATCH
+--------------------------------------------------
+a[^p-z]b        
+        aab
+	a b
+	a+b	
+	apb	    DOESN'T MATCH
+	arb	    DOESN'T MATCH
+	azb	    DOESN'T MATCH
+----------------------------------------------
+a[-p-z]b	
+        apb
+	aqb
+	arb
+	a-b	
+	aab	DOESN'T MATCH
+---------------------------------------------
+
+ab*c	ac
+	abc
+	abbc
+	abbbc
+	.
+	.
+	.
+
+	azc	DOESN'T MATCH
+	a c	DOESN'T MATCH	
+-------------------------------------------
+abb*c	ac	DOESN'T MATCH
+	abc
+	abbc
+	abbbc
+------------------------------------------
+b*	wrqwer
+	basdfasdf
+	123412341234
+	QWERQWERQWE	
+
+MATCHS EVERYLINE -----  ZERO or MORE b's
+---------------------------------------------
+
+ab+c	ac        DOESN'T MATCH
+	abc
+	abbc
+	.
+	.
+----------------------------------------------
+ab?c	ac
+	abc
+	abbc      DOESN'T MATCH
+
+------------------------------------------------
+^ab|xy$	ab123
+	123xy
+-------------------------------------------------
+a[bc]+d	acbbbcccbbbcd
+ ----
+
+        abccccccbbbccd
+
+a(bc)+d	abcbcbcbcbcbcd
+  -- 
+
+1 + 2  * 3 
+( 1 + 2 ) * 3
+
+
+a(b[cd]e)+f	abdebdebcebdebcebcebcef
+  ------         +++---+++---+++---+++
+-------------------------------------------------
+1 + 2   ==3
+( 1+ 2) ==3 
+
+No difference without any further operator like  * 
+
+1 + 2 * 3
+( 1+ 2) * 3
+
+abcd    abcd
+a(bc)d	abcd 
+
+----------------------------------------------------
+
+Differences between grep and egrep:
+
+grep 'ab+c'
+
+	ab+c
+	abbbbc      	DOESN'T MATCH
+
+egrep 'ab+c'
+
+	ab+c	        DOESN'T MATCH
+	abbbbbbc
+
+grep 'a(bc)*d'
+
+	a(bc)))))))d
+
+egrep 'a(bc)*d'
+
+	abcbcbcbcd
+
+--------------------------------------------------
+
+[0-9]+	         qwer 4567 asdf
+
+^[0-9]+	         7687687 qwerqwerqwe
+
+[0-9]+$	         qwrqwerqwer 2341234
+
+^[0-9]+$	 12341234123423
+ 
+-----------------------------------------------------

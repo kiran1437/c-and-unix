@@ -1,0 +1,23 @@
+isignal1.c 
+signal.c  Can demonstrate that signal being handled 
+          is blocked in the duration of the handler. 
+
+action.c simulate old style signal() behaviour. 
+action1.c  Retrieves info with sa_sigaction being set and SA_SIGINFO
+           act var is global so that it is zeroed and sa_handler 
+           is automatically null. 
+
+
+Why blocking? Reentrancy required. 
+ex: strtok. 
+
+
+actionblock.c  Sets the handler and then blocks sig 2. 
+
+actionblock1.c  Sets the handler for signals 2 ans 10. But species
+                sig 2 is blocked when signal 10 is handled.
+
+
+
+But signals can generally be lost, even if they are reliable. 
+

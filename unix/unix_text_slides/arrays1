@@ -1,0 +1,52 @@
+#!/bin/ksh 
+
+A=( hello world shell scripting )
+
+echo "\${A[0]}=${A[0]}"
+echo "\${A[1]}=${A[1]}"
+echo "\${A[2]}=${A[2]}"
+echo "\${A[3]}=${A[3]}"
+echo
+echo
+
+echo "\${A[*]}=${A[*]}"
+echo "\${#A[*]}=${#A[*]}"
+echo
+echo
+
+A[3]=programming
+A[7]=Far-away-value1
+A[8]=Far-away-value2
+
+echo "\${A[2]}=${A[2]}"
+echo "\${A[3]}=${A[3]}"
+echo "\${A[7]}=${A[7]}"
+echo "\${A[8]}=${A[8]}"
+echo "\${A[*]}=${A[*]}"
+echo "\${#A[*]}=${#A[*]}"
+echo "\${!A[*]}=${!A[*]}"
+echo
+echo
+
+for index in ${!A[*]}
+do
+echo -n index = $index 
+echo "  \${A[$index]}="${A[index]}
+done
+
+echo
+echo
+
+B=( FIRST ${A[*]} LAST  ) 
+echo "\${B[*]}=${B[*]}"
+echo "\${#B[*]}=${#B[*]}"
+echo "\${!B[*]}=${!B[*]}"
+echo
+echo
+
+C=( /etc/pa*  ) 
+echo "\${C[*]}=${C[*]}"
+echo "\${#C[*]}=${#C[*]}"
+echo "\${!C[*]}=${!C[*]}"
+
+

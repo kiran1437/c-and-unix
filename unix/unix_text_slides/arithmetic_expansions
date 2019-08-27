@@ -1,0 +1,27 @@
+ X=30
+ Y=40
+ ecoh hello $((X+Y)) world
+ echo hello $((X+Y)) world
+ echo hello $((X*Y)) world
+ Z=$((X*Y)) 
+ echo $Z
+ Z=$((X++*++Y)) 
+ echo $Z
+ echo $X
+ echo $Y
+ $((X++))
+ clear
+ (( 0  ))
+ echo $?
+ (( 1 ))
+ echo $?
+ (( 200 ))
+ echo $?
+ (( -200 ))
+ echo $?
+ (( X > Y ))
+ echo $?
+ (( X < Y ))
+ echo $?
+ if (( X > Y )) ; then ech X is greater; else echo Y ...; fi
+ if (( X < Y )) ; then echo X is greater; else echo Y ...; fi

@@ -1,0 +1,14 @@
+
+
+touch tempfile
+
+read X
+
+if [ $X -eq 0 ] 
+then exit 1 ;
+else echo in else;
+fi
+
+rm  tempfile
+
+

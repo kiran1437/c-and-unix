@@ -1,0 +1,93 @@
+
+
+
+    Infix :
+              a +   b *  c + d / e * f 
+
+    Post fix:
+              ( ( a +   ( b *  c) ) + (   ( d / e)  * f)  )   
+
+              ( ( a +   ( b c  *) ) + (   ( d e /)  f *)  )   
+
+              ( ( a ( b c  *)    +) + (   ( d e /)  f *)  )   
+
+              ( ( a ( b c  *)    +) (   ( d e /)  f *)    + )   
+
+                  a   b c  *     +        d e /   f *     +     
+
+                            abc*+de/f*+
+              
+
+Conversion with a stack:
+
+1) Stack for operators.  Buffer for the expression.
+
+   B---->      Means the base of the stack
+
+2) Operands copied to the buffer.
+   Operators:
+           a) If stack empty push.
+           b) If the operator at the top of stack 
+                     has higher precendence, pop it and copy 
+                     to the end of the buffer.
+                     Push the low precedence operator to the 
+                     stack.
+              else
+                  push the operator 
+
+Once entire expression is scanned, pop all the elements 
+from stack and copy to the end of the buffer.
+
+
+              a +   b *  c + d / e * f 
+     
+        B--->               Buffer
+                            a
+            
+        B---> +             Buffer
+                            a
+
+        B---> +             Buffer
+                            ab
+
+              *
+        B---> +             Buffer
+                            ab
+
+              *
+        B---> +             Buffer
+                            abc
+
+              
+        B---> +             Buffer
+                            abc*
+
+        B--->               Buffer
+                            abc*+
+
+        B--->+              Buffer
+                            abc*+
+
+        B--->+              Buffer
+                            abc*+d
+     
+             /
+        B--->+              Buffer
+                            abc*+d
+
+             /
+        B--->+              Buffer
+                            abc*+de
+
+             *
+        B--->+              Buffer
+                            abc*+de/
+
+             *
+        B--->+              Buffer
+                            abc*+de/f
+
+--------------------------------------------
+                            Buffer
+                            abc*+de/f*+
+ 

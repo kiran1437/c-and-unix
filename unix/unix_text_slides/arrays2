@@ -1,0 +1,35 @@
+#!/bin/ksh 
+
+A=( [2]=hello [3]=world [6]=shell [7]=scripting )
+
+echo "\${A[2]}=${A[2]}"
+echo "\${A[3]}=${A[3]}"
+echo "\${A[6]}=${A[6]}"
+echo "\${A[7]}=${A[7]}"
+echo
+echo
+
+echo "\${A[*]}=${A[*]}"
+echo "\${#A[*]}=${#A[*]}"
+echo "\${!A[*]}=${!A[*]}"
+echo
+echo
+
+A[8]=Far-away-value2
+
+echo "\${A[7]}=${A[7]}"
+echo "\${A[8]}=${A[8]}"
+echo "\${A[*]}=${A[*]}"
+echo "\${#A[*]}=${#A[*]}"
+echo "\${!A[*]}=${!A[*]}"
+echo
+echo
+
+for index in ${!A[*]}
+do
+echo -n index = $index 
+echo "  \${A[$index]}="${A[$index]}
+done
+
+echo
+echo
